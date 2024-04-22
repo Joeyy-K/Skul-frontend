@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 
-
 const RootLayout = () => {
   const { isAuthenticated, isLoading } = useContext(AuthContext); 
   const navigate = useNavigate();
@@ -18,12 +17,8 @@ const RootLayout = () => {
   if (isLoading) {
 
     return (
-      <div className="w-1/2 m-auto h-auto">
-        <div className="flex items-center justify-center space-x-2 animate-bounce">
-          <div className="w-8 h-8 bg-indigo-600 rounded-full"></div>
-          <div className="w-8 h-8 bg-gray-400 rounded-full"></div>
-          <div className="w-8 h-8 bg-black rounded-full"></div>
-        </div>
+      <div className="flex justify-center items-center h-screen">
+        <div className="rounded-full h-20 w-20 bg-violet-800 animate-ping"></div>
       </div>
   )
   }

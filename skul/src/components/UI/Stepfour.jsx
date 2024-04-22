@@ -19,12 +19,11 @@ function Stepfour({ schoolId, setSchoolId }) {
     <div>
         <label className="block mb-2 text-base font-bold text-gray-700 dark:text-white">School:</label>
         <select value={schoolId} onChange={e => setSchoolId(Number(e.target.value))}>
-  <option value="">Select a school</option>
-  {schools.map(school => (
-    <option key={school.id} value={school.id}>{school.full_name}</option>
-  ))}
-</select>
-
+          <option value="">Select a school</option>
+          {schools.map(school => (
+            <option key={school.id} value={school.id}>{school.full_name}</option>
+          ))}
+        </select>
     </div>
   )
 }

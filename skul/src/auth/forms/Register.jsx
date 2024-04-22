@@ -6,6 +6,7 @@ import Tstepthree from '../../components/UI/Tstepthree';
 import Stepfour from '../../components/UI/Stepfour';
 import { Link } from "react-router-dom";
 import { AuthContext } from '../../contexts/AuthContext';
+import { UserContext } from '../../contexts/UserContext';
 import Cookies from 'js-cookie';
 import { getCookie } from '../../components/cookie/utils';
 
@@ -22,7 +23,7 @@ const Register = () => {
   const [schoolId, setSchoolId] = useState('');
   const [totalSteps, setTotalSteps] = useState(4);
   const { setIsAuthenticated, setRole } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const { setUser } = useContext(UserContext);
 
   let csrftoken = getCookie('csrftoken');
 
@@ -93,7 +94,18 @@ const Register = () => {
         console.log(data);
         setIsAuthenticated(true);
         setRole(data.role);
+        setUser(data.user);
         Cookies.set('isAuthenticated', 'true');
+        Cookies.set('role', data.role);
+        Cookies.set('user', JSON.stringify(data.user));
+        Cookies.set('userToken', data.token);
+        if (data.role === 'teacher') {
+          Cookies.set('teacher', JSON.stringify(data.user));
+        } else if (data.role === 'student') {
+          Cookies.set('student', JSON.stringify(data.user));
+        } else if (data.role === 'school') {
+          Cookies.set('school', JSON.stringify(data.user));
+        }
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -101,18 +113,18 @@ const Register = () => {
   };
 
   return (
-    <div className="h-full  bg-white dark:bg-gray-900">
+    <div className="h-full">
       <div className="mx-auto">
 		    <div className="flex py-5">
           <div className="w-full justify-center flex">
-            <div className="w-full lg:w-3/4 bg-gray-200 dark:bg-gray-700 p-5 rounded-lg">
+            <div className="w-full lg:w-3/4 bg-gray-200 dark:bg-gray-700 rounded-lg">
 					    <h3 className="py-4 text-2xl text-center text-gray-800 dark:text-white">Create an Account!</h3>
               <form className="px-8 pt-6 pb-8 mb-4 bg-gray-200 dark:bg-gray-800 rounded">
               <div className="flex justify-between px-2 mb-4">
-              <div className={step === 1 ? "text-pink-500" : "text-gray-500"}>Step 1</div>
-              <div className={step === 2 ? "text-pink-500" : "text-gray-500"}>Step 2</div>
-              <div className={step === 3 ? "text-pink-500" : "text-gray-500"}>Step 3</div>
-              {role !== 'school' && <div className={step === 4 ? "text-pink-500" : "text-gray-500"}>Step 4</div>}
+              <div className={step === 1 ? "text-pink-500" : "text-gray-500 dark:text-gray-100"}>Step 1</div>
+              <div className={step === 2 ? "text-pink-500" : "text-gray-500 dark:text-gray-100"}>Step 2</div>
+              <div className={step === 3 ? "text-pink-500" : "text-gray-500 dark:text-gray-100"}>Step 3</div>
+              {role !== 'school' && <div className={step === 4 ? "text-pink-500 dark:text-gray-100" : "text-gray-500 dark:text-gray-100"}>Step 4</div>}
               </div>
               <div className="relative h-5 rounded-full overflow-hidden bg-gray-300 mt-2 mb-5 mx-10">
                 <div className="absolute top-0 bottom-0 left-0 rounded-full bg-gradient-to-r from-pink-500 to-purple-500" style={{ width: `${((step - 1) / (totalSteps - 1)) * 100}%` }} />
@@ -156,7 +168,7 @@ const Register = () => {
                 </div>
                 </div>
                 <div className="flex items-center justify-between mb-3">
-                <p className="font-semibold">
+                <p className="font-semibold text-black dark:text-white">
                     Already Have An Account?
                     <Link className="text-red-600 underline" to={'/'}>
                       {} Sign In
@@ -164,7 +176,7 @@ const Register = () => {
                 </p>
                 </div>
                 <aside className="">
-                  <div className="bg-gray-100 p-8 rounded">
+                  <div className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white p-8 rounded">
                       <h2 className="font-bold text-2xl">Instructions</h2>
                       <ul className="list-disc mt-4 list-inside">
                           <li>All users must provide a valid email address and password to create an account.</li>

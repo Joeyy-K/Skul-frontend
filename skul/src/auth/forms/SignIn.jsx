@@ -1,11 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
+import { UserContext } from '../../contexts/UserContext';
 import { getCookie } from '../../components/cookie/utils';
 import Cookies from 'js-cookie';
 
 const SignIn = () => {
   const { setIsAuthenticated, setRole } = useContext(AuthContext);
+  const { setUser } = useContext(UserContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -38,7 +40,18 @@ const SignIn = () => {
       console.log(data);
       setIsAuthenticated(true);
       setRole(data.role);
+      setUser(data.user);
       Cookies.set('isAuthenticated', 'true');
+      Cookies.set('role', data.role);
+      Cookies.set('user', JSON.stringify(data.user));
+      Cookies.set('userToken', data.token);
+      if (data.role === 'teacher') {
+        Cookies.set('teacher', JSON.stringify(data.user));
+      } else if (data.role === 'student') {
+        Cookies.set('student', JSON.stringify(data.user));
+      } else if (data.role === 'school') {
+        Cookies.set('school', JSON.stringify(data.user));
+      }
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -47,11 +60,11 @@ const SignIn = () => {
   
 
   return (
-    <div className="h-full  bg-white dark:bg-gray-900">
+    <div className="h-full">
       <div className="mx-auto">
 		    <div className="flex py-20">
           <div className="w-full justify-center flex">
-            <div className="w-full lg:w-3/4 bg-gray-200 dark:bg-gray-700 p-5 rounded-lg">
+            <div className="w-full lg:w-3/4 bg-gray-200 dark:bg-gray-700  rounded-lg">
                 <h2 className="py-4 text-2xl text-center text-gray-800 dark:text-white">Welcome Back!</h2>
                 <form className="px-8 pt-6 pb-8 mb-4 bg-gray-200 dark:bg-gray-800 rounded" onSubmit={handleSubmit}>
                   <div className="mb-4">
@@ -60,7 +73,7 @@ const SignIn = () => {
                         Username:
                       </label>
                       <input 
-                        className="w-full mb-3 py-2 text-base leading-tight text-gray-700 dark:text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        className="w-full mb-3 py-2 text-base leading-tight text-gray-700 dark:text-black border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                         type="text" 
                         value={username} 
                         onChange={e => setUsername(e.target.value)} 
@@ -69,7 +82,7 @@ const SignIn = () => {
                         Password:       
                       </label>
                       <input 
-                        className="w-full mb-3 py-2 text-base leading-tight text-gray-700 dark:text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        className="w-full mb-3 py-2 text-base leading-tight text-gray-700 dark:text-black border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                         type="password" 
                         value={password} 
                         onChange={e => setPassword(e.target.value)} 
@@ -81,7 +94,7 @@ const SignIn = () => {
                           >
                             Sign In
                         </button>
-                        <p className="font-semibold">
+                        <p className="font-semibold text-black dark:text-white">
                           Don't have an account?
                           <Link className="text-red-600 underline" to={'/register'}>
                             {} Register
