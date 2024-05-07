@@ -3,6 +3,9 @@ import NavbarAndHeader from './components/NavbarAndHeader';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import GradesPage from './pages/GradesPage';
+import StudentPage from './pages/StudentPage';
+import TeacherPage from './pages/TeacherPage';
+import ChannelPage from './pages/ChannelPage';
 
 function SchoolLayout() {
   return (
@@ -12,6 +15,9 @@ function SchoolLayout() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/grades" element={<GradesPage />} />
+          <Route path="/students" element={<StudentPage />} />
+          <Route path="/teachers" element={<TeacherPage />} />
+          <Route path="/channel" element={<ChannelPage />} />
         </Routes>
       </main>
     </div>

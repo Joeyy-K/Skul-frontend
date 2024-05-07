@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { SchoolContext } from "../context/schoolcontext";
 import AddStudentForm from '../forms/AddStudentForm';
 import AddGradeForm from '../forms/AddGradeForm';
 import Cookies from 'js-cookie';
@@ -9,11 +10,12 @@ function GradesPage() {
     const [teacherId, setTeacherId] = useState('');
     const [teachers, setTeachers] = useState([]);
     const [schools, setSchools] = useState([]);
+    const { school } = useContext(SchoolContext);
 
     let userToken = Cookies.get('userToken');
 
     useEffect(() => {
-      fetch('http://127.0.0.1:8000/school/grades/', {
+      fetch(`http://127.0.0.1:8000/school/grades/?school_id=${school.id}`, {
         headers: {
           'Authorization': `Token ${userToken}`,
         },

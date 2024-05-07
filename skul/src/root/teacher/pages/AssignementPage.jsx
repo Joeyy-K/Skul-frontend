@@ -172,32 +172,32 @@ function AssignmentForm({ onCreate }) {
 }
 
 function AssignmentPage() {
-  const [assignments, setAssignments] = useState([])
-  let userToken = Cookies.get('userToken');
+    const [assignments, setAssignments] = useState([])
+    let userToken = Cookies.get('userToken');
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/school/assignments/', {
-      headers: {
-        'Authorization': `Token ${userToken}`
-      }
-    })
-    .then(response => response.json())
-    .then(data => setAssignments(data));
-  }, [])
+    useEffect(() => {
+      fetch('http://127.0.0.1:8000/school/assignments/', {
+        headers: {
+          'Authorization': `Token ${userToken}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => setAssignments(data));
+    }, [])
 
-  const handleDelete = (id) => {
-    setAssignments(assignments.filter(assignment => assignment.id !== id))
-  }
+    const handleDelete = (id) => {
+      setAssignments(assignments.filter(assignment => assignment.id !== id))
+    }
 
-  const handleCreate = (newAssignment) => {
-    setAssignments(prevAssignments => [...prevAssignments, newAssignment])
-  }
+    const handleCreate = (newAssignment) => {
+      setAssignments(prevAssignments => [...prevAssignments, newAssignment])
+    }
 
-  return (
-    <div className="bg-gray-200 dark:bg-gray-800 p-6 rounded-md shadow-md">
-      <AssignmentForm onCreate={handleCreate} />
-      <AssignmentList assignments={assignments} onDelete={handleDelete} />
-    </div>
+    return (
+      <div className="bg-gray-200 dark:bg-gray-800 p-6 rounded-md shadow-md">
+        <AssignmentForm onCreate={handleCreate} />
+        <AssignmentList assignments={assignments} onDelete={handleDelete} />
+      </div>
   )
 }
 

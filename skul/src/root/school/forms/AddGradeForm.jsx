@@ -31,18 +31,18 @@ function AddGradeForm({ onAddGrade }) {
       };
       
     return (
-         <div className="bg-white px-10 p-7 mx-auto rounded dark:bg-gray-700">
-            <form onSubmit={handleSubmit}>
-                <input
-                type="text"
-                value={gradeName}
-                onChange={e => setGradeName(e.target.value)}
-                placeholder="Enter grade name"
-                className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
-                />
-                <button type="submit" className="py-2 px-4 mt-2 bg-blue-500 text-white font-bold rounded dark:bg-blue-400">Add Grade</button>
-            </form>
-        </div>
+      <div className="bg-white px-10 p-7 mx-auto rounded dark:bg-gray-700">
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={gradeName}
+            onChange={e => setGradeName(e.target.value)}
+            placeholder="Enter grade name"
+            className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
+          />
+          <button type="submit" className="py-2 px-4 mt-2 bg-blue-500 text-white font-bold rounded dark:bg-blue-400">Add Grade</button>
+        </form>
+      </div>
         );
 }
 
