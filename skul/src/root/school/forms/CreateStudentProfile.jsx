@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { SchoolContext } from '../context/schoolcontext';
 import Cookies from 'js-cookie';
 
@@ -10,36 +10,39 @@ const CreateStudentProfile = ({ onAddStudent }) => {
   const [password, setPassword] = useState('');
   const [schoolId, setSchoolId] = useState('');
   const [gradeId, setGradeId] = useState('');
-  const { school } = useContext(SchoolContext)
+  const { school } = useContext(SchoolContext);
 
-  console.log(school)
+  let userToken = Cookies.get('userToken');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!firstName || !lastName || !username || !password || !email || !schoolId) {
+      console.error('Please fill in all required fields.');
+      return;
+    }
 
     try {
       const response = await fetch('http://127.0.0.1:8000/school/register_student/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Token ${userToken}`
         },
         body: JSON.stringify({
-          role: 'student',
           first_name: firstName,
           last_name: lastName,
-          user: {
-            username,
-            password,
-            email,
-          },
-          school: schoolId,
-          grade: gradeId,
+          username,
+          password,
+          email,
+          school: parseInt(school.id, 10),
+          grade: gradeId ? parseInt(gradeId, 10) : null,
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        onAddStudent(data.user); 
+        onAddStudent(data);
         setFirstName('');
         setLastName('');
         setEmail('');
@@ -55,11 +58,11 @@ const CreateStudentProfile = ({ onAddStudent }) => {
   };
 
   return (
-    <div className="bg-white px-10 p-7 mx-auto rounded dark:bg-gray-700">
-      <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+    <div className="bg-gray-200 p-6 rounded-lg shadow-md dark:bg-gray-800">
+      <h2 className="text-2xl font-semibold text-gray-700 dark:text-white mb-6">
         Create Student Profile
       </h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="bg-white p-4 rounded-lg shadow-md">
         <div className="mb-4">
           <label
             htmlFor="firstName"
@@ -72,7 +75,7 @@ const CreateStudentProfile = ({ onAddStudent }) => {
             id="firstName"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
+            className="w-full px-4 py-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
         </div>
         <div className="mb-4">
@@ -87,7 +90,7 @@ const CreateStudentProfile = ({ onAddStudent }) => {
             id="lastName"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
+            className="w-full px-4 py-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
         </div>
         <div className="mb-4">
@@ -102,7 +105,7 @@ const CreateStudentProfile = ({ onAddStudent }) => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
+            className="w-full px-4 py-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
         </div>
         <div className="mb-4">
@@ -117,7 +120,7 @@ const CreateStudentProfile = ({ onAddStudent }) => {
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
+            className="w-full px-4 py-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
         </div>
         <div className="mb-4">
@@ -132,7 +135,7 @@ const CreateStudentProfile = ({ onAddStudent }) => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
+            className="w-full px-4 py-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
         </div>
         <div className="mb-4">
@@ -145,12 +148,13 @@ const CreateStudentProfile = ({ onAddStudent }) => {
           <input
             type="text"
             id="schoolId"
-            value={schoolId}
+            value={school.id}
             onChange={(e) => setSchoolId(e.target.value)}
-            className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
+            className="w-full px-4 py-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            disabled
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-6">
           <label
             htmlFor="gradeId"
             className="block text-gray-700 font-bold mb-2 dark:text-gray-300"
@@ -162,12 +166,12 @@ const CreateStudentProfile = ({ onAddStudent }) => {
             id="gradeId"
             value={gradeId}
             onChange={(e) => setGradeId(e.target.value)}
-            className="border-b-2 border-gray-400 flex-1 py-2 placeholder-gray-300 outline-none focus:border-green-400 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400"
+            className="w-full px-4 py-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
         </div>
         <button
           type="submit"
-          className="py-2 px-4 bg-blue-500 text-white font-bold rounded dark:bg-blue-400"
+          className="py-2 px-4 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition-colors duration-200"
         >
           Create Student Profile
         </button>
