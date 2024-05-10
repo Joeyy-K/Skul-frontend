@@ -1,40 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { UserContext } from '../../../contexts/UserContext';
+import Cookies from 'js-cookie';
 
-const ChannelForm = () => {
-  const [name, setName] = useState('');
+function AddChannel() {
+    const { user } = useContext(UserContext);
+    const [channelName, setChannelName] = useState('');
+    const [channelDescription, setChannelDescription] = useState('');
+    let userToken = Cookies.get('userToken');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-    const channelData = {
-      name: name,
+        try {
+            const response = await fetch('http://127.0.0.1:8000/channels/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Token ${userToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: channelName,
+                    description: channelDescription,
+                    school: user.id,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || 'Could not create channel.');
+            }
+
+            setChannelName('');
+            setChannelDescription('');
+            alert('Channel created successfully!');
+        } catch (error) {
+            console.error('Error creating channel:', error);
+        }
     };
 
-    fetch('http://127.0.0.1:8000/school/channels/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(channelData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Success:', data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  };
+    return (
+        <form onSubmit={handleSubmit}>
+            <h1>Add Channel</h1>
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Channel Name:
-        <input type="text" value={name} onChange={e => setName(e.target.value)} />
-      </label>
-      <input type="submit" value="Create Channel" />
-    </form>
-  );
-};
+            <label>
+                Name:
+                <input type="text" value={channelName} onChange={(e) => setChannelName(e.target.value)} required />
+            </label>
 
-export default ChannelForm;
+            <label>
+                Description:
+                <textarea value={channelDescription} onChange={(e) => setChannelDescription(e.target.value)} />
+            </label>
+
+            <button type="submit">Add Channel</button>
+        </form>
+    );
+}
+
+export default AddChannel;

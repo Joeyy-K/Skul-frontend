@@ -4,7 +4,7 @@ const StudentList = ({ students, selectedGrade, onBackToGrades }) => {
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 p-2">
           Students in {selectedGrade.name}
         </h2>
         <button
@@ -44,7 +44,7 @@ const StudentList = ({ students, selectedGrade, onBackToGrades }) => {
           </table>
         </div>
       ) : (
-        <p className="text-black dark:text-gray-400">No students found in this grade.</p>
+        <p className="text-black dark:text-gray-400 p-2">No students found in this grade.</p>
       )}
     </div>
   );

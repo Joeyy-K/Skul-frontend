@@ -78,7 +78,7 @@ function GradesPage() {
     };
 
     return (
-      <div className="dark:bg-gray-800">
+      <div>
         <div className="flex flex-col mt-6 mb-6">
           <div className="-my-2 overflow-x-auto">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -127,7 +127,7 @@ function GradesPage() {
         {selectedGrade && (
          <div className="bg-white px-10 p-7  mx-auto rounded dark:bg-gray-700">
            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{selectedGrade.name}</h2>
-           <p className="text-sm text-gray-500 dark:text-gray-300">Teacher: {selectedGrade.teacher ? selectedGrade.teacher.first_name : 'No teacher assigned'}</p>
+           <p className="text-sm text-gray-500 dark:text-gray-300">Teacher: {selectedGrade.teacher ? selectedGrade.teacher : 'No teacher assigned'}</p>
            <form onSubmit={handleAddTeacher} className="mb-4">
              <input
                type="text"
