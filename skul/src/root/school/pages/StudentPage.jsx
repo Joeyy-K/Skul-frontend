@@ -71,7 +71,7 @@ function StudentsPage() {
           onGradeSelect={handleGradeSelect}
           onBackToGrades={handleBackToGrades}
         />
-        <CreateStudentProfile onAddStudent={handleAddStudent} />
+        <CreateStudentProfile onAddStudent={handleAddStudent} selectedGrade={selectedGrade} />
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import GradesPage from './pages/GradesPage';
 import StudentPage from './pages/StudentPage';
 import TeacherPage from './pages/TeacherPage';
 import ChannelPage from './pages/ChannelPage';
+import MessagePage from './pages/MessagePage';
 
 function SchoolLayout() {
   return (
@@ -17,7 +18,8 @@ function SchoolLayout() {
           <Route path="/grades" element={<GradesPage />} />
           <Route path="/students" element={<StudentPage />} />
           <Route path="/teachers" element={<TeacherPage />} />
-          <Route path="/channel" element={<ChannelPage />} />
+          <Route path="/channel/" element={<ChannelPage />} />
+          <Route path="/messages/:channelId" element={<MessagePage />} />
         </Routes>
       </main>
     </div>

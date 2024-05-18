@@ -7,6 +7,7 @@ function TeacherPage() {
   const [teachers, setTeachers] = useState([]);
   const { school } = useContext(SchoolContext);
   const userToken = Cookies.get('userToken');
+  const [grades, setGrades] = useState([]);
 
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/school/teachers/`, {
@@ -24,6 +25,25 @@ function TeacherPage() {
         console.error('Error:', error);
       });
   }, []);
+
+  const fetchGrades = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/school/grades/?school_id=${school.id}`, {
+        headers: {
+          'Authorization': `Token ${userToken}`,
+        },
+      });
+      const data = await response.json();
+      setGrades(data);
+    } catch (error) {
+      console.error('Error fetching grades:', error);
+    }
+  };  
+
+  useEffect(() => {
+    fetchGrades(); 
+  }, []);
+  
 
   const handleAddTeacher = (newTeacher) => {
     setTeachers([...teachers, newTeacher]);
@@ -68,7 +88,7 @@ function TeacherPage() {
                         {teacher.user.email}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {teacher.grade ? teacher.grade : 'No grade assigned'}
+                        {teacher.grade ? grades.find(grade => grade.id === teacher.grade).name : 'No grade assigned'}
                       </td>
                       <td className="px-6 py -4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {teacher.user.channel ? teacher.user.channel.name : 'No channel assigned'}

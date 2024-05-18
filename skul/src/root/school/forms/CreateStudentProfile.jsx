@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { SchoolContext } from '../context/schoolcontext';
 import Cookies from 'js-cookie';
 
-const CreateStudentProfile = ({ onAddStudent }) => {
+const CreateStudentProfile = ({ onAddStudent, selectedGrade }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -13,6 +13,12 @@ const CreateStudentProfile = ({ onAddStudent }) => {
   let schoolId = school ? school.id : '';
 
   let userToken = Cookies.get('userToken');
+
+  useEffect(() => {
+    if (selectedGrade) {
+      setGradeId(selectedGrade.id);
+    }
+  }, [selectedGrade]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
