@@ -1,30 +1,32 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { SchoolContext } from "../context/schoolcontext";
+import React, { useState, useEffect } from 'react';
+import { useSchoolData } from '../context/useSchoolData';
 import Cookies from 'js-cookie';
 import CreateTeacherForm from '../forms/CreateTeacherForm';
 
 function TeacherPage() {
+  const { school, loading } = useSchoolData();
   const [teachers, setTeachers] = useState([]);
-  const { school } = useContext(SchoolContext);
   const userToken = Cookies.get('userToken');
   const [grades, setGrades] = useState([]);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/school/teachers/`, {
-      headers: {
-        'Authorization': `Token ${userToken}`,
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        const schoolTeachers = data.filter(teacher => teacher.school === school.id);
-        setTeachers(schoolTeachers);
-        console.log(schoolTeachers);
+    if (!loading) {
+      fetch(`http://127.0.0.1:8000/school/teachers/`, {
+        headers: {
+          'Authorization': `Token ${userToken}`,
+        },
       })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }, []);
+        .then(response => response.json())
+        .then(data => {
+          const schoolTeachers = data.filter(teacher => teacher.school === school.id);
+          setTeachers(schoolTeachers);
+          console.log(schoolTeachers);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  }, [loading]);
 
   const fetchGrades = async () => {
     try {
@@ -41,13 +43,19 @@ function TeacherPage() {
   };  
 
   useEffect(() => {
-    fetchGrades(); 
-  }, []);
+    if (!loading) {
+      fetchGrades(); 
+    }
+  }, [loading]);
   
 
   const handleAddTeacher = (newTeacher) => {
     setTeachers([...teachers, newTeacher]);
   };
+
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
 
   return (
     <div>

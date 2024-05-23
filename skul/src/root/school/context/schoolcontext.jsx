@@ -1,21 +1,25 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import Cookies from 'js-cookie';
 
 export const SchoolContext = createContext();
 
 export const SchoolProvider = ({ children }) => {
-    const [school, setSchool] = useState(null);
+  const [school, setSchool] = useState(null);
 
-    useEffect(() => {
-      const schoolCookie = Cookies.get('school');
-      const school = schoolCookie ? JSON.parse(schoolCookie) : null;
+  const setSchoolData = useCallback((data) => {
+    setSchool(data);
+  }, []);
 
-      setSchool(school);
-    }, []);
+  useEffect(() => {
+    const schoolCookie = Cookies.get('school');
+    const school = schoolCookie ? JSON.parse(schoolCookie) : null;
 
-    return (
-      <SchoolContext.Provider value={{ school, setSchool }}>
-        {children}
-      </SchoolContext.Provider>
-    );
-  };
+    setSchoolData(school);
+  }, [setSchoolData]);
+
+  return (
+    <SchoolContext.Provider value={{ school, setSchool: setSchoolData }}>
+      {children}
+    </SchoolContext.Provider>
+  );
+};

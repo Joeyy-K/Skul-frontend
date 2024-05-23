@@ -1,20 +1,21 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { SchoolContext } from "../context/schoolcontext";
+import React, { useState, useEffect } from 'react';
+import { useSchoolData } from '../context/useSchoolData';
 import AddStudentForm from '../forms/AddStudentForm';
 import AddGradeForm from '../forms/AddGradeForm';
 import Cookies from 'js-cookie';
 
 function GradesPage() {
-    const [grades, setGrades] = useState([]);
-    const [selectedGrade, setSelectedGrade] = useState(null);
-    const [teacherId, setTeacherId] = useState('');
-    const [teachers, setTeachers] = useState([]);
-    const [schools, setSchools] = useState([]);
-    const { school } = useContext(SchoolContext);
+  const { school, loading } = useSchoolData();
+  const [grades, setGrades] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState(null);
+  const [teacherId, setTeacherId] = useState('');
+  const [teachers, setTeachers] = useState([]);
+  const [schools, setSchools] = useState([]);
 
-    let userToken = Cookies.get('userToken');
+  let userToken = Cookies.get('userToken');
 
-    useEffect(() => {
+  useEffect(() => {
+    if (!loading) {
       fetch(`http://127.0.0.1:8000/school/grades/?school_id=${school.id}`, {
         headers: {
           'Authorization': `Token ${userToken}`,
@@ -26,7 +27,7 @@ function GradesPage() {
           console.error('Error:', error);
         });
     
-      fetch('http://127.0.0.1:8000/school/teachers/', {
+        fetch('http://127.0.0.1:8000/school/teachers/', {
         headers: {
           'Authorization': `Token ${userToken}`,
         },
@@ -37,7 +38,7 @@ function GradesPage() {
           console.error('Error:', error);
         });
     
-      fetch('http://127.0.0.1:8000/school/schools/', {
+        fetch('http://127.0.0.1:8000/school/schools/', {
         headers: {
           'Authorization': `Token ${userToken}`,
         },
@@ -47,7 +48,8 @@ function GradesPage() {
         .catch(error => {
           console.error('Error:', error);
         });
-    }, []);
+    }
+  }, [loading]);
 
     const handleGradeClick = (grade) => {
       setSelectedGrade(grade);
@@ -76,6 +78,10 @@ function GradesPage() {
           console.error('Error:', error);
         });
     };
+
+    if (loading) {
+      return <div>Loading...</div>; 
+    }
 
     return (
       <div>

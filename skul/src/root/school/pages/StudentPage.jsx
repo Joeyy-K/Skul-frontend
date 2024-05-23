@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import CreateStudentProfile from '../forms/CreateStudentProfile';
-import { SchoolContext } from "../context/schoolcontext";
+import { useSchoolData } from '../context/useSchoolData';
 import Cookies from 'js-cookie';
 import GradeStudentList from '../components/GradeStudentList';
 
 function StudentsPage() {
-  const { school } = useContext(SchoolContext);
+  const { school, loading } = useSchoolData();
   const [students, setStudents] = useState([]);
   const [grades, setGrades] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState(null);
@@ -60,6 +60,10 @@ function StudentsPage() {
   const handleAddStudent = (newStudent) => {
     setStudents([...students, newStudent]);
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Or a loading spinner
+  }
 
   return (
     <div className="bg-gray-100 dark:bg-gray-800">
