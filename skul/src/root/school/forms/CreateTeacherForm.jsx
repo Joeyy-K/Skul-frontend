@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { SchoolContext } from '../context/schoolcontext';
 import Cookies from 'js-cookie';
 
@@ -9,9 +9,15 @@ const CreateTeacherForm = ({ onAddTeacher }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { school } = useContext(SchoolContext);
-  let schoolId = school ? school.id : '';
+  const [schoolId, setSchoolId] = useState('');
 
   let userToken = Cookies.get('userToken');
+
+  useEffect(() => {
+    if (school) {
+      setSchoolId(school.id);
+    }
+  }, [school]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

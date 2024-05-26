@@ -9,31 +9,32 @@ function HomePage() {
     const [events, setEvents] = useState([]);
     const { school } = useContext(SchoolContext)
     const [schoolData, setSchoolData] = useState(null);
-    const schoolId = user.id;
 
     let userToken = Cookies.get('userToken');
     console.log(user)
     console.log(school)
   
-    useEffect(() => {
-    const fetchSchoolData = async () => {
+    const fetchSchoolData = async (schoolId) => {
         try {
-        const response = await fetch(`http://127.0.0.1:8000/school/schools/${schoolId}/`, {
+          const response = await fetch(`http://127.0.0.1:8000/school/schools/${schoolId}/`, {
             headers: {
-            'Authorization': `Token ${userToken}`,
+              'Authorization': `Token ${userToken}`,
             },
-        });
-        const data = await response.json();
-        setSchoolData(data);
+          });
+          const data = await response.json();
+          setSchoolData(data);
         } catch (error) {
-        console.error('Error fetching school data:', error);
+          console.error('Error fetching school data:', error);
         }
     };
 
-    fetchSchoolData();
-    }, [schoolId]);
+    useEffect(() => {
+        if (user) {
+          const schoolId = user.id;
+          fetchSchoolData(schoolId);
+        }
+    }, [user]);
   
-
     useEffect(() => {
         fetch('http://127.0.0.1:8000/school/announcements/', {
         headers: {

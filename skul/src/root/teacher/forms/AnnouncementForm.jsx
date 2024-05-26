@@ -1,13 +1,16 @@
 import React, { useState, useContext } from 'react'
 import { TeacherContext } from '../contexts/teachercontext'
+import Cookies from 'js-cookie'
 
 const AnnouncementForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [selectedFile, setSelectedFile] = useState(null)  // Add this line
-  const { teacher } = useContext(TeacherContext)
+  const [selectedFile, setSelectedFile] = useState(null);
+  const { teacher } = useContext(TeacherContext);
 
-  const handleFileChange = (event) => {  // Add this function
+  let userToken = Cookies.get('userToken');
+
+  const handleFileChange = (event) => { 
     setSelectedFile(event.target.files[0])
   }
 
@@ -23,6 +26,9 @@ const AnnouncementForm = () => {
     }
 
     fetch('http://127.0.0.1:8000/school/announcements/', {
+      headers: {
+        'Authorization': `Token ${userToken}`,
+      },
       method: 'POST',
       body: formData,
     })

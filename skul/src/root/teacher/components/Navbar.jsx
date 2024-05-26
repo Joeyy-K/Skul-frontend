@@ -49,7 +49,7 @@ function Navbar({ isOpen, setIsOpen }) {
           <li className="mb-2"><Link to="/teacher-dashboard/students" className="block hover:text-indigo-400">Students</Link></li>
           <li className="mb-2"><Link to="/teacher-dashboard/assignements" className="block hover:text-indigo-400">Assignements</Link></li>
           <li className="mb-2"><Link to="/teacher-dashboard/feedback" className="block hover:text-indigo-400">Feedback</Link></li>
-          <li className="mb-2"><Link to="/teacher-dashboard/messages" className="block hover:text-indigo-400">Messages</Link></li>
+          <li className="mb-2"><Link to="/teacher-dashboard/channel" className="block hover:text-indigo-400">Channel</Link></li>
           <li className="mb-2"><button onClick={handleLogout} className="block hover:text-indigo-400">Logout</button></li>
         </ul>
       </div>

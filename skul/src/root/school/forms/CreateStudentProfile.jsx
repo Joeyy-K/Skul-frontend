@@ -10,9 +10,16 @@ const CreateStudentProfile = ({ onAddStudent, selectedGrade }) => {
   const [password, setPassword] = useState('');
   const [gradeId, setGradeId] = useState('');
   const { school } = useContext(SchoolContext);
-  let schoolId = school ? school.id : '';
+  const [schoolId, setSchoolId] = useState('');
 
   let userToken = Cookies.get('userToken');
+
+  useEffect(() => {
+    if (school) {
+      setSchoolId(school.id);
+    }
+  }, [school]);
+
 
   useEffect(() => {
     if (selectedGrade) {

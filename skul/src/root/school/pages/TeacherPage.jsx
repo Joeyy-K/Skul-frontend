@@ -99,7 +99,7 @@ function TeacherPage() {
                         {teacher.grade ? grades.find(grade => grade.id === teacher.grade).name : 'No grade assigned'}
                       </td>
                       <td className="px-6 py -4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {teacher.user.channel ? teacher.user.channel.name : 'No channel assigned'}
+                        {teacher.user.channel ? teacher.user.channel : 'No channel assigned'}
                       </td>
                     </tr>
                   ))}

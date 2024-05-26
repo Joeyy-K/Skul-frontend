@@ -58,8 +58,8 @@ function HomePage() {
   return (
     <div className="mb-20">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-10 md:pt-14">
-        <div className="bg-gray-200 dark:bg-black block rounded-xl border border-gray-800 p-4">
-          <h2 className="mt-1 ml-3 font-semibold text-base sm:text-lg text-black dark:text-white">
+        <div className="bg-white dark:bg-gray-800 block rounded-xl border border-gray-800 p-4">
+          <h2 className="mt-1 ml-3 font-semibold text-base sm:text-lg text-black dark:text-white dark:bg-gray-700 rounded-xl p-1 px-3">
             Your Profile
           </h2>
           <hr className="my-3 dark:bg-white bg-black h-0.4"/>
@@ -92,8 +92,8 @@ function HomePage() {
             Username: {user.user.username}
           </p>
         </div>
-        <div className="bg-white dark:bg-black block rounded-xl border border-gray-800 p-4">
-          <h2 className="mt-1 ml-3 font-semibold text-base sm:text-lg text-black dark:text-white">
+        <div className="bg-white dark:bg-gray-800 block rounded-xl border border-gray-800 p-4">
+          <h2 className="mt-1 ml-3 font-semibold text-base sm:text-lg text-black dark:text-white dark:bg-gray-700 rounded-xl p-1 px-3">
             Additional Info
           </h2>
           <hr className="my-3 dark:bg-white bg-black h-0.4"/>
@@ -128,7 +128,7 @@ function HomePage() {
         </div>
       </div>
       <div className="ml-10 mb-8">
-        <div className="bg-white dark:bg-black block rounded-xl border w-5/6 border-gray-800 p-4">
+        <div className="bg-white dark:bg-gray-800 block rounded-xl border w-5/6 border-gray-800 p-4">
             <h2 className="mt-1 mb-2 font-semibold text-base sm:text-lg text-black dark:text-white">
             🗣🔊 Latest Announcements
             </h2>
@@ -148,7 +148,7 @@ function HomePage() {
         </div>
       </div>
       <div className="ml-10 mb-8">
-        <div className="bg-white dark:bg-black block rounded-xl border w-5/6 border-gray-800 p-4">
+        <div className="bg-white dark:bg-gray-800 block rounded-xl border w-5/6 border-gray-800 p-4">
             <h2 className="mt-1 mb-2 font-semibold text-base sm:text-lg text-black dark:text-white">
             🗣🔊 Latest Events
             </h2>

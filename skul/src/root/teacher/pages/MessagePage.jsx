@@ -4,12 +4,11 @@ import SendMessage from '../components/SendMessage';
 import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../../contexts/UserContext';
-import { useSchoolData } from '../context/useSchoolData';
-import AddUsersToChannel from '../components/AddUsersToChannel';
+import { TeacherContext } from '../contexts/teachercontext';
 
 function MessagePage() {
-    const { school, loading } = useSchoolData();
-    console.log(school)
+    const { teacher } = useContext(TeacherContext)
+    console.log(teacher)
     const { channelId } = useParams();
     const [messages, setMessages] = useState([]);
     const userToken = Cookies.get('userToken');
@@ -32,9 +31,9 @@ function MessagePage() {
     };
 
     const fetchUsers = async () => {
-        if (school) {
+        if (teacher) {
           try {
-            const response = await fetch(`http://127.0.0.1:8000/school/school/${school.id}/users/`, {
+            const response = await fetch(`http://127.0.0.1:8000/school/school/${teacher.school}/users/`, {
               headers: {
                 'Authorization': `Token ${userToken}`,
               },
@@ -61,13 +60,6 @@ function MessagePage() {
         console.error('Error fetching messages:', error);
         }
     };
-
-    const toggleAddUsers = () => {
-        setShowAddUsers((prevShowAddUsers) => !prevShowAddUsers);
-        if (showChannelUsers) {
-          setShowChannelUsers(false);
-        }
-    };
       
     const toggleChannelUsers = () => {
         setShowChannelUsers((prevShowChannelUsers) => !prevShowChannelUsers);
@@ -90,24 +82,12 @@ function MessagePage() {
         }
     };
 
-    if (loading) {
-        return <div>Loading...</div>; 
-      }
-
     return channelId ? (
         <div className="h-full flex flex-col">
         <div className="bg-gray-200 dark:bg-gray-800 flex-1 overflow-y-scroll px-4 py-2 pb-56">
             <div className="flex justify-between items-center mb-4">
             <h2 className="font-medium dark:text-white">Channel Messages</h2>
             <div className="flex">
-                <button
-                className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 mr-2"
-                onClick={toggleAddUsers}
-                >
-                <svg fill="#ffffff" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2,21h8a1,1,0,0,0,0-2H3.071A7.011,7.011,0,0,1,10,13a5.044,5.044,0,1,0-3.377-1.337A9.01,9.01,0,0,0,1,20,1,1,0,0,0,2,21ZM10,5A3,3,0,1,1,7,8,3,3,0,0,1,10,5ZM23,16a1,1,0,0,1-1,1H19v3a1,1,0,0,1-2,0V17H14a1,1,0,0,1,0-2h3V12a1,1,0,0,1,2,0v3h3A1,1,0,0,1,23,16Z" />
-                </svg>
-                </button>
                 <button
                 className="bg-gray-500 text-white py-1 px-2 rounded hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-700"
                 onClick={toggleChannelUsers}
@@ -120,11 +100,6 @@ function MessagePage() {
                 </button>
             </div>
             </div>
-            {showAddUsers && (
-            <Modal show={showAddUsers} onClose={toggleAddUsers}>
-                <AddUsersToChannel />
-            </Modal>
-            )}
             {showChannelUsers && (
             <Modal show={showChannelUsers} onClose={toggleChannelUsers}>
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
@@ -147,7 +122,7 @@ function MessagePage() {
                     <div className="text-sm mb-1 dark:text-white">{sender ? sender.username : 'Unknown'}</div>
                     <div
                     className={`inline-block rounded-lg p-2 shadow max-w-sm ${
-                        message.sender === user.user.id ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-900'
+                        message.sender === user.user.id ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-900 dark:text-white'
                     }`}
                     >
                     {message.content}

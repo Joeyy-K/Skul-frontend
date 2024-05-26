@@ -36,7 +36,7 @@ function Navbar({ isOpen, setIsOpen }) {
     return (
       <div
         ref={navbarRef}
-        className={`absolute bg-white dark:bg-black text-black dark:text-white w-56 min-h-screen overflow-y-auto transition-transform transform ${
+        className={`absolute bg-white dark:bg-black text-black dark:text-white w-56 h-full overflow-y-auto transition-transform transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } ease-in-out duration-300`}
         id="sidebar"
