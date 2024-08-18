@@ -3,9 +3,9 @@ import Background from './Background'
 
 function AppWrapper({ children }) {
   return (
-    <div className="relative h-screen">
+    <div className="h-screen">
       <Background />
-      <div className="relative z-10">{children}</div>
+      <div className="z-10">{children}</div>
     </div>
   )
 }

@@ -8,23 +8,27 @@ function TeacherPage() {
   const [teachers, setTeachers] = useState([]);
   const userToken = Cookies.get('userToken');
   const [grades, setGrades] = useState([]);
+  const itemsPerPage = 10; 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const fetchTeachers = () => {
+    fetch(`http://127.0.0.1:8000/school/teachers/?school_id=${school.id}`, {
+      headers: {
+        'Authorization': `Token ${userToken}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setTeachers(data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
 
   useEffect(() => {
     if (!loading) {
-      fetch(`http://127.0.0.1:8000/school/teachers/`, {
-        headers: {
-          'Authorization': `Token ${userToken}`,
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          const schoolTeachers = data.filter(teacher => teacher.school === school.id);
-          setTeachers(schoolTeachers);
-          console.log(schoolTeachers);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+      fetchTeachers();
     }
   }, [loading]);
 
@@ -47,10 +51,50 @@ function TeacherPage() {
       fetchGrades(); 
     }
   }, [loading]);
-  
 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, teachers.length);
+
+  const totalPages = Math.ceil(teachers.length / itemsPerPage);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+  
   const handleAddTeacher = (newTeacher) => {
     setTeachers([...teachers, newTeacher]);
+  };
+
+  const handleUnassignTeacher = (teacherId) => {
+    fetch(`http://127.0.0.1:8000/school/unassign-teacher/${teacherId}/`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${userToken}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.message);
+        fetchTeachers();
+      })
+      .catch(error => console.error('Error:', error));
+  };
+
+  const handleDeleteTeacher = (teacherId) => {
+    if (window.confirm('Are you sure you want to delete this teacher?')) {
+      fetch(`http://127.0.0.1:8000/school/delete-teacher/${teacherId}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Token ${userToken}`,
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.message);
+          fetchTeachers(); 
+        })
+        .catch(error => console.error('Error:', error));
+    }
   };
 
   if (loading) {
@@ -59,7 +103,7 @@ function TeacherPage() {
 
   return (
     <div>
-      <div className="flex flex-col mt-6 mb-6">
+      <div className="flex flex-col mt-6">
         <div className="-my-2 overflow-x-auto">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -81,10 +125,13 @@ function TeacherPage() {
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Channel
                     </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-800">
-                  {teachers.map((teacher) => (
+                  {teachers.slice(startIndex, endIndex).map((teacher) => (
                     <tr key={teacher.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                         {teacher.id}
@@ -98,8 +145,22 @@ function TeacherPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {teacher.grade ? grades.find(grade => grade.id === teacher.grade).name : 'No grade assigned'}
                       </td>
-                      <td className="px-6 py -4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {teacher.user.channel ? teacher.user.channel : 'No channel assigned'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handleUnassignTeacher(teacher.id)}
+                          className="mr-2 px-2 py-1 bg-yellow-500 text-white rounded"
+                        >
+                          Unassign
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTeacher(teacher.id)}
+                          className="px-2 py-1 bg-red-500 text-white rounded"
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -108,6 +169,24 @@ function TeacherPage() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex justify-center mt-2 mb-2">
+        {currentPage > 1 && (
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="mr-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500"
+          >
+            Previous
+          </button>
+        )}
+        {currentPage < totalPages && (
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500"
+          >
+            Next
+          </button>
+        )}
       </div>
       <CreateTeacherForm onAddTeacher={handleAddTeacher} />
     </div>

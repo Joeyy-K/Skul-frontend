@@ -11,6 +11,8 @@ function GradesPage() {
   const [teacherId, setTeacherId] = useState('');
   const [teachers, setTeachers] = useState([]);
   const [schools, setSchools] = useState([]);
+  const itemsPerPage = 10; 
+  const [currentPage, setCurrentPage] = useState(1);
 
   let userToken = Cookies.get('userToken');
 
@@ -27,7 +29,7 @@ function GradesPage() {
           console.error('Error:', error);
         });
     
-        fetch('http://127.0.0.1:8000/school/teachers/', {
+        fetch(`http://127.0.0.1:8000/school/teachers/?school_id=${school.id}`, {
         headers: {
           'Authorization': `Token ${userToken}`,
         },
@@ -79,6 +81,37 @@ function GradesPage() {
         });
     };
 
+    const handleDeleteGrade = (gradeId) => {
+      if (window.confirm('Are you sure you want to delete this grade? This action cannot be undone.')) {
+        fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/delete/`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Token ${userToken}`,
+          },
+        })
+          .then(response => {
+            if (response.ok) {
+              setGrades(grades.filter(grade => grade.id !== gradeId));
+              setSelectedGrade(null);
+            } else {
+              throw new Error('Failed to delete grade');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        }
+      };
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, teachers.length);
+
+    const totalPages = Math.ceil(teachers.length / itemsPerPage);
+
+    const handlePageChange = (newPage) => {
+      setCurrentPage(newPage);
+    };
+
     if (loading) {
       return <div>Loading...</div>; 
     }
@@ -104,10 +137,13 @@ function GradesPage() {
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Teacher
                       </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-800">
-                    {grades.map((grade) => (
+                    {grades.slice(startIndex, endIndex).map((grade) => (
                       <tr key={grade.id} onClick={() => handleGradeClick(grade)} className="cursor-pointer">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                         {grade.id}
@@ -121,6 +157,17 @@ function GradesPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {teachers.find(teacher => teacher.id === grade.teacher) ? teachers.find(teacher => teacher.id === grade.teacher).first_name + ' ' + teachers.find(teacher => teacher.id === grade.teacher).last_name : 'No teacher assigned'}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteGrade(grade.id);
+                          }}
+                          className="px-2 py-1 bg-red-500 text-white rounded"
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>                    
                     ))}
                   </tbody>
@@ -128,6 +175,24 @@ function GradesPage() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="flex justify-center mt-2 mb-2">
+        {currentPage > 1 && (
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="mr-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500"
+          >
+            Previous
+          </button>
+        )}
+        {currentPage < totalPages && (
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500"
+          >
+            Next
+          </button>
+        )}
         </div>
         <AddGradeForm onAddGrade={handleAddGrade} />
         {selectedGrade && (

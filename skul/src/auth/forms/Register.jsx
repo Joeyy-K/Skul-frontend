@@ -7,6 +7,7 @@ import Stepfour from '../../components/UI/Stepfour';
 import { Link } from "react-router-dom";
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
+import Darkmode from '../../components/UI/Darkmode';
 import Cookies from 'js-cookie';
 import { getCookie } from '../../components/cookie/utils';
 
@@ -24,6 +25,7 @@ const Register = () => {
   const [totalSteps, setTotalSteps] = useState(4);
   const { setIsAuthenticated, setRole } = useContext(AuthContext);
   const { setUser } = useContext(UserContext);
+  const [error, setError] = useState('');
 
   let csrftoken = getCookie('csrftoken');
 
@@ -31,15 +33,44 @@ const Register = () => {
     setTotalSteps(role === 'school' ? 3 : 4);
   }, [role]);
 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidName = (name) => {
+    const nameRegex = /^[a-zA-Z\s'-]+$/;
+    return nameRegex.test(name);
+  };
+
   const handleNext = () => {
     event.preventDefault();
     if (step < totalSteps) {
       if (step === 1 && role) {
+        setError('');
         setStep(step + 1);
-      } else if (step === 2 && email && password) {
+      } else if (step === 2 && email && password.length >= 8 && isValidEmail(email) && username) {
+        setError('');
         setStep(step + 1);
-      } else if (step === 3 && ((role === 'school' && fullName && location) || (role !== 'school' && firstName && lastName))) {
+      } else if (step === 3 && ((role === 'school' && fullName && isValidName(fullName) && location) || (role !== 'school' && firstName && isValidName(firstName) && lastName && isValidName(lastName)))) {
+        setError('');
         setStep(step + 1);
+      } else {
+        let errorMessage = '';
+        if (!role) {
+          errorMessage = 'Please select a role';
+        } else if (!isValidEmail(email)) {
+          errorMessage = 'Please enter a valid email address';
+        } else if (password.length < 8) {
+          errorMessage = 'Password must be at least 8 characters long';
+        } else if (!username) {
+          errorMessage = 'Please enter a username';
+        } else if (role === 'school' && (!fullName || !isValidName(fullName))) {
+          errorMessage = 'Please enter a valid full name';
+        } else if (role !== 'school' && (!firstName || !isValidName(firstName) || !lastName || !isValidName(lastName))) {
+          errorMessage = 'Please enter valid first and last names';
+        }
+        setError(errorMessage);
       }
     } else {
       register();
@@ -56,16 +87,13 @@ const Register = () => {
   const register = () => {
     const data = {
       role,
-      email,
-      password,
       user: {
         username: username,
         email: email,
-        password,
+        password: password,
       },
     };
-    console.log(data)
-
+  
     if (role === 'school') {
       data.full_name = fullName;
       data.location = location;
@@ -74,23 +102,23 @@ const Register = () => {
       data.last_name = lastName;
       data.school = schoolId;
     }
-
+  
     fetch('http://127.0.0.1:8000/schoolauth/register/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken
+        'X-CSRFToken': csrftoken,
       },
       body: JSON.stringify(data),
-      credentials: 'include', 
+      credentials: 'include',
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
+            return response.json().then(err => { throw new Error(err.error); });
+          }
+          return response.json();
+        })
+      .then((data) => {
         console.log(data);
         setIsAuthenticated(true);
         setRole(data.role);
@@ -109,11 +137,15 @@ const Register = () => {
       })
       .catch((error) => {
         console.error('Error:', error);
-      });
+        setError(error.message);
+      });      
   };
 
   return (
     <div className="h-full">
+      <div className="flex justify-center pt-2">
+        <Darkmode />
+      </div>
       <div className="mx-auto">
 		    <div className="flex py-5">
           <div className="w-full justify-center flex">
@@ -129,6 +161,11 @@ const Register = () => {
               <div className="relative h-5 rounded-full overflow-hidden bg-gray-300 mt-2 mb-5 mx-10">
                 <div className="absolute top-0 bottom-0 left-0 rounded-full bg-gradient-to-r from-pink-500 to-purple-500" style={{ width: `${((step - 1) / (totalSteps - 1)) * 100}%` }} />
               </div>
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                  <span className="block sm:inline">{error}</span>
+                </div>
+              )}
 
                 <div>
                 {step === 1 && (

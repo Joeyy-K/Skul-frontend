@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import { getCookie } from '../../components/cookie/utils';
+import Darkmode from '../../components/UI/Darkmode';
 import Cookies from 'js-cookie';
 
 const SignIn = () => {
@@ -10,6 +11,7 @@ const SignIn = () => {
   const { setUser } = useContext(UserContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   let csrftoken = getCookie('csrftoken');
 
@@ -30,11 +32,11 @@ const SignIn = () => {
       body: JSON.stringify(data),
       credentials: 'include', 
     })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
+          return response.json().then(err => { throw new Error(err.error); });
+        }
+        return response.json();
     })
     .then(data => {
       console.log(data);
@@ -55,17 +57,26 @@ const SignIn = () => {
     })
     .catch((error) => {
       console.error('Error:', error);
+      setError(error.message);
     });
   };
   
 
   return (
     <div className="h-full">
+      <div className="flex justify-center pt-2">
+        <Darkmode />
+      </div>
       <div className="mx-auto">
 		    <div className="flex py-20">
           <div className="w-full justify-center flex">
             <div className="w-full lg:w-3/4 bg-gray-200 dark:bg-gray-700  rounded-lg">
                 <h2 className="py-4 text-2xl text-center text-gray-800 dark:text-white">Welcome Back!</h2>
+                {error && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <span className="block sm:inline">{error}</span>
+                  </div>
+                )}
                 <form className="px-8 pt-6 pb-8 mb-4 bg-gray-200 dark:bg-gray-800 rounded" onSubmit={handleSubmit}>
                   <div className="mb-4">
                     <div className="mb-4">

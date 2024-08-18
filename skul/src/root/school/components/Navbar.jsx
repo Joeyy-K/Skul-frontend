@@ -36,7 +36,7 @@ function Navbar({ isOpen, setIsOpen }) {
     return (
       <div
         ref={navbarRef}
-        className={`absolute bg-white dark:bg-black text-black dark:text-white w-56 h-full overflow-y-auto transition-transform transform ${
+        className={`absolute bg-white dark:bg-black text-black dark:text-white w-56 min-h-full overflow-y-auto transition-transform transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } ease-in-out duration-300`}
         id="sidebar"
@@ -44,7 +44,7 @@ function Navbar({ isOpen, setIsOpen }) {
         <div className="p-4">
           <h1 className="text-2xl font-semibold">Dashboard</h1>
           <ul className="mt-4">
-            <li className="mb-2"><Link to="/school-dashboard/" className="block hover:text-indigo-400">Home</Link></li>
+            <li className="mb-2"><Link to="/school-dashboard/" className="block hover:text-indigo-400">Home</Link></li>        
             <li className="mb-2"><Link to="/school-dashboard/students" className="block hover:text-indigo-400">Students</Link></li>
             <li className="mb-2"><Link to="/school-dashboard/teachers" className="block hover:text-indigo-400">Teachers</Link></li>
             <li className="mb-2"><Link to="/school-dashboard/grades" className="block hover:text-indigo-400">Grades</Link></li>

@@ -7,10 +7,7 @@ import { useParams } from 'react-router-dom';
 
 function ChannelPage() {
     const { channelId } = useParams();
-    const { user } = useContext(UserContext);
-    const { teacher } = useContext(TeacherContext);
     const [channels, setChannels] = useState([]);
-    const schoolId = teacher.school;
     let userToken = Cookies.get('userToken');
 
     useEffect(() => {

@@ -7,6 +7,7 @@ import StudentPage from './pages/StudentPage';
 import TeacherPage from './pages/TeacherPage';
 import ChannelPage from './pages/ChannelPage';
 import MessagePage from './pages/MessagePage';
+import ProfilePage from './pages/ProfilePage';
 
 function SchoolLayout() {
   return (
@@ -16,6 +17,7 @@ function SchoolLayout() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/grades" element={<GradesPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/students" element={<StudentPage />} />
           <Route path="/teachers" element={<TeacherPage />} />
           <Route path="/channel/" element={<ChannelPage />} />

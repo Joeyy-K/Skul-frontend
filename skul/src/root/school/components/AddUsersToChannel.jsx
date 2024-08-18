@@ -7,14 +7,16 @@ import { useParams } from 'react-router-dom';
 const AddUsersToChannel = () => {
     const { channelId } = useParams();
     const { school } = useContext(SchoolContext);
-    const currentUser = useContext(UserContext); // Assuming UserContext provides the actual user object
+    const currentUser = useContext(UserContext);
     const [users, setUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const userToken = Cookies.get('userToken');
 
     useEffect(() => {
+      if ( school && school.id) {
         fetchUsers();
-    }, []);
+      }
+    }, [school]);
 
     const fetchUsers = async () => {
         try {
@@ -52,7 +54,6 @@ const AddUsersToChannel = () => {
 
         await Promise.all(promises);
         setSelectedUsers([]);
-        // Optionally, you can display a success message or redirect the user
         } catch (error) {
         console.error('Error adding users to channel:', error);
         }

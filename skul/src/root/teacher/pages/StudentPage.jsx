@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { TeacherContext } from '../contexts/teachercontext';
-import AddStudentForm from '../forms/AddStudentForm';
+import CreateStudentProfile from '../forms/CreateStudentProfile';
 import Cookies from 'js-cookie';
 
 const StudentPage = () => {
@@ -25,6 +25,10 @@ const StudentPage = () => {
     }
   }, [teacher]);
 
+  const handleAddStudent = (newStudent) => {
+    setStudents([...students, newStudent]);
+  };
+
   if (!teacher || !teacher.grade) {
     return (
       <div className="bg-gray-200 dark:bg-gray-800 text-center p-6 rounded-md shadow-md">
@@ -45,6 +49,7 @@ const StudentPage = () => {
               <tr className="bg-gray-200 dark:bg-gray-700">
                 <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">ID</th>
                 <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">Name</th>
+                <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">Email</th>
                 <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">School</th>
                 <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">Grade</th>
               </tr>
@@ -56,6 +61,7 @@ const StudentPage = () => {
                   <td className="px-4 py-2 text-gray-600 dark:text-gray-300">
                     {student.first_name} {student.last_name}
                   </td>
+                  <td className="px-4 py-2 text-gray-600 dark:text-gray-300">{student.user.email}</td>
                   <td className="px-4 py-2 text-gray-600 dark:text-gray-300">{student.school_name}</td>
                   <td className="px-4 py-2 text-gray-600 dark:text-gray-300">{student.grade_name}</td>
                 </tr>
@@ -67,7 +73,7 @@ const StudentPage = () => {
         <p className="text-gray-600 dark:text-gray-400">No students found in this grade.</p>
       )}
       <div className="mt-6">
-        <AddStudentForm disabled={!teacher || !teacher.grade} />
+        <CreateStudentProfile onAddStudent={handleAddStudent} />
       </div>
     </div>
   );
