@@ -1,80 +1,47 @@
 import React, { useState } from 'react';
 import { FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import ProfileModal from './ProfileModal';
 import Cookies from 'js-cookie';
+import ProfileModal from './ProfileModal';
 import Avatar from '../../../components/shared/Avatars';
 
-const StudentList = ({ students, grades = [], onStudentUpdate }) => {
+const TeacherList = ({ teachers, grades, onUnassignTeacher, onDeleteTeacher }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [selectedTeacher, setSelectedTeacher] = useState(null);
     const itemsPerPage = 10;
-    const userToken = Cookies.get('userToken');
     const userRole = Cookies.get('role');
 
-    const indexOfLastStudent = currentPage * itemsPerPage;
-    const indexOfFirstStudent = indexOfLastStudent - itemsPerPage;
-    const currentStudents = students.slice(indexOfFirstStudent, indexOfLastStudent);
+    const indexOfLastTeacher = currentPage * itemsPerPage;
+    const indexOfFirstTeacher = indexOfLastTeacher - itemsPerPage;
+    const currentTeachers = teachers.slice(indexOfFirstTeacher, indexOfLastTeacher);
 
-    const totalPages = Math.ceil(students.length / itemsPerPage);
-
-    const studentFields = [
-        { label: 'Name', value: (student) => `${student.first_name} ${student.last_name}` },
-        { label: 'School', value: (student) => student.school_name },
-        { label: 'Grade', value: (student) => student.grade_name || 'Not Assigned' },
-        { label: 'Email', value: (student) => student.user?.email || 'N/A' },
-    ];
-
-    const handleRowClick = (student) => {
-        setSelectedStudent(student);
-    };
-
-    const handleCloseModal = () => {
-        setSelectedStudent(null);
-    };
-
-    const onUnassignStudent = (studentId) => {
-        fetch(`http://127.0.0.1:8000/school/unassign-student/${studentId}/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Token ${userToken}`,
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.message);
-            onStudentUpdate();
-        })
-        .catch(error => console.error('Error:', error));
-    };
-
-    const onDeleteStudent = (studentId) => {
-        if (window.confirm('Are you sure you want to delete this student?')) {
-            fetch(`http://127.0.0.1:8000/school/delete-student/${studentId}/`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Token ${userToken}`,
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.message);
-                onStudentUpdate();
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    };
+    const totalPages = Math.ceil(teachers.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
     };
 
-    const handleActionClick = (e, action, studentId) => {
-        e.stopPropagation();  // Prevent the row click event from firing
+    const teacherFields = [
+        { label: 'Name', value: (teacher) => `${teacher.first_name} ${teacher.last_name}` },
+        { label: 'Email', value: (teacher) => teacher.user?.email || 'N/A' },
+        { label: 'School', value: (teacher) => teacher.school?.full_name || 'Not Assigned' },
+        { label: 'Grade', value: (teacher) => teacher.grade?.name || 'Not Assigned' },
+    ];
+
+    const handleRowClick = (teacher) => {
+        setSelectedTeacher(teacher);
+    };
+
+    const handleActionClick = (e, action, teacherId) => {
+        e.stopPropagation();  
         if (action === 'unassign') {
-            onUnassignStudent(studentId);
+            onUnassignTeacher(teacherId);
         } else if (action === 'delete') {
-            onDeleteStudent(studentId);
+            onDeleteTeacher(teacherId);
         }
+    };
+
+    const handleCloseModal = () => {
+        setSelectedTeacher(null);
     };
 
     return (
@@ -84,45 +51,53 @@ const StudentList = ({ students, grades = [], onStudentUpdate }) => {
                     <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Avatar</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">School</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Full Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Grade</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Channel</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        {currentStudents.map((student) => (
+                        {currentTeachers.map((teacher) => (
                             <tr 
-                                key={student.id} 
-                                onClick={() => handleRowClick(student)}
+                                key={teacher.id} 
+                                onClick={() => handleRowClick(teacher)}
                                 className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                             >
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <Avatar 
-                                        avatarUrl={student.user?.avatar_url} 
-                                        name={`${student.first_name} ${student.last_name}`} 
-                                        size={32} 
-                                    />
+                                <Avatar 
+                                    avatarUrl={teacher.user?.avatar_url} 
+                                    name={`${teacher.first_name} ${teacher.last_name}`} 
+                                    size={32} 
+                                />
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                    {student.first_name} {student.last_name}
+                                    {teacher.id}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                    {teacher.first_name} {teacher.last_name}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    {student.school_name}
+                                    {teacher.user.email}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    {student.grade_name || 'Not Assigned'}
+                                    {teacher.grade ? grades.find(grade => grade.id === teacher.grade).name : 'No grade assigned'}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    {teacher.user.channel ? teacher.user.channel : 'No channel assigned'}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button
-                                        onClick={(e) => handleActionClick(e, 'unassign', student.id)}
+                                        onClick={(e) => handleActionClick(e, 'unassign', teacher.id)}
                                         className="text-yellow-600 hover:text-yellow-900 mr-3"
                                     >
                                         <FiEdit2 />
                                     </button>
                                     {userRole === 'school' && (
                                         <button
-                                            onClick={(e) => handleActionClick(e, 'delete', student.id)}
+                                            onClick={(e) => handleActionClick(e, 'delete', teacher.id)}
                                             className="text-red-600 hover:text-red-900"
                                         >
                                             <FiTrash2 />
@@ -155,17 +130,16 @@ const StudentList = ({ students, grades = [], onStudentUpdate }) => {
                     </button>
                 </div>
             )}
-            {selectedStudent && (
+            {selectedTeacher && (
                 <ProfileModal
-                    title="Student Profile"
-                    data={selectedStudent}
-                    fields={studentFields}
+                    title="Teacher Profile"
+                    data={selectedTeacher}
+                    fields={teacherFields}
                     onClose={handleCloseModal}
                 />
             )}
- 
         </>
     );
 };
 
-export default StudentList;
+export default TeacherList;

@@ -19,8 +19,8 @@ function MessagePage() {
     const [showAddUsers, setShowAddUsers] = useState(false);
     const [showChannelUsers, setShowChannelUsers] = useState(false);
     console.log("Rendering MessagePage. Channel Users:", channelUsers);
-console.log("Current user:", user);
-console.log("Current channelId:", channelId);
+    console.log("Current user:", user);
+    console.log("Current channelId:", channelId);
     const handleNewMessage = (newMessage) => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
     };
@@ -86,7 +86,7 @@ console.log("Current channelId:", channelId);
 
     return channelId ? (
         <div className="min-h-full flex flex-col">
-        <div className="bg-gray-200 dark:bg-gray-800 flex-1 overflow-y-scroll px-4 py-2">
+        <div className="flex-1 overflow-y-scroll px-4 py-2">
             <div className="flex justify-between items-center mb-4">
             <h2 className="font-medium dark:text-white">Channel Messages</h2>
             <div className="flex">

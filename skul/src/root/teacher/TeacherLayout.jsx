@@ -9,6 +9,8 @@ import ChannelPage from './pages/ChannelPage';
 import FeedbackPage from './pages/FeedbackPage';
 import MessagePage from './pages/MessagePage';
 import AssignementPage from './pages/AssignementPage';
+import ProfilePage from './pages/ProfilePage';
+import AnnouncementPage from './pages/AnnouncementPage';
 
 function TeacherLayout() {
   return (
@@ -24,6 +26,8 @@ function TeacherLayout() {
           <Route path="/assignements" element={<AssignementPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/messages/:channelId" element={<MessagePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/announcements/" element={<AnnouncementPage />} />
         </Routes>
       </main>
     </div>

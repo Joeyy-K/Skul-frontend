@@ -5,173 +5,188 @@ import Cookies from "js-cookie";
 
 function HomePage() {
   const { user } = useContext(UserContext);
-  const [announcements, setAnnouncements] = useState([]);
   const [events, setEvents] = useState([]);
 
   const { teacher } = useContext(TeacherContext)
 
   console.log(user)
   console.log(teacher)
-  
-  let userToken = Cookies.get('userToken');
+    const [announcements, setAnnouncements] = useState([]);
+    const [schedules, setSchedules] = useState([]);
+    const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+    const [schoolData, setSchoolData] = useState(null);
+    const userToken = Cookies.get('userToken');
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/school/announcements/', {
-      headers: {
-        'Authorization': `Token ${userToken}`,
-    
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Announcements data:', data);  
-      setAnnouncements(data);
-    })
-  }, [teacher])
+    useEffect(() => {
+        if (user) {
+            fetchSchoolData(user.school);
+            fetchAnnouncements();
+            fetchSchedules();
+        }
+    }, [user, teacher]);
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/school/events/', {
-      headers: {
-        'Authorization': `Token ${userToken}`,
-    
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Events data:', data);  
-      setEvents(data);
-    })
-  }, [teacher])
-      
+    const fetchSchoolData = async (schoolId) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/school/schools/${schoolId}/`, {
+                headers: { 'Authorization': `Token ${userToken}` },
+            });
+            const data = await response.json();
+            setSchoolData(data);
+        } catch (error) {
+            console.error('Error fetching school data:', error);
+        }
+    };
+
+
+  const fetchAnnouncements = async () => {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/school/announcements/', {
+            headers: { 'Authorization': `Token ${userToken}` },
+        });
+        const data = await response.json();
+        setAnnouncements(data);
+    } catch (error) {
+        console.error('Error fetching announcements:', error);
+    }
+  };
+
+  const fetchSchedules = async () => {
+      try {
+          const response = await fetch('http://127.0.0.1:8000/school/schedules/', {
+              headers: { 'Authorization': `Token ${userToken}` },
+          });
+          const data = await response.json();
+          setSchedules(data);
+      } catch (error) {
+          console.error('Error fetching schedules:', error);
+      }
+  };
+
+  const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+      }).format(date);
+  };
 
   if (!user) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold">No user data</h2>
-          <p className="text-gray-500 bg-white rounded-md p-4">Unable to fetch user information.</p>
-        </div>
-      </div>
-    );
-  }
+      return (
+          <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
+              <div className="text-center p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">No user data</h2>
+                  <p className="text-gray-600 dark:text-gray-300">Unable to fetch user information.</p>
+              </div>
+          </div>
+      );
+}
 
   return (
-    <div className="mb-20">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-10 md:pt-14">
-        <div className="bg-white dark:bg-gray-800 block rounded-xl border border-gray-800 p-4">
-          <h2 className="mt-1 ml-3 font-semibold text-base sm:text-lg text-black dark:text-white dark:bg-gray-700 rounded-xl p-1 px-3">
-            Your Profile
-          </h2>
-          <hr className="my-3 dark:bg-white bg-black h-0.4"/>
-          <span className="inline-block rounded-lg p-3">
-            <div className="inline-flex align-middle justify-center items-center select-none">
-              <div className="h-20 w-20 overflow-hidden rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="h-20 w-20 p-5 text-white bg-gray-500 stroke-current"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-          </span>
-          <p className="my-1 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">
-            Full Name: {user.first_name} {user.last_name}
-          </p>
-          <p className="my-1 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">
-            Email: {user.user.email}
-          </p>
-          <p className="my-1 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">
-            Username: {user.user.username}
-          </p>
-        </div>
-        <div className="bg-white dark:bg-gray-800 block rounded-xl border border-gray-800 p-4">
-          <h2 className="mt-1 ml-3 font-semibold text-base sm:text-lg text-black dark:text-white dark:bg-gray-700 rounded-xl p-1 px-3">
-            Additional Info
-          </h2>
-          <hr className="my-3 dark:bg-white bg-black h-0.4"/>
-          <span className="inline-block rounded-lg p-3">
-            <div className="inline-flex align-middle justify-center items-center select-none">
-              <div className="h-20 w-20 overflow-hidden rounded-full">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="h-20 w-20 p-5 text-white bg-gray-500 stroke-current"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M12,22 L12,2 M2,12 L22,12"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-          </span>
-          <p className="my-1 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">
-            Your School: {user.school}
-          </p>
-          <p className="my-1 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">
-            Grade Teacher: {user.grade}
-          </p>
-          <p className="my-1 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">
-            Role: Teacher
-          </p>
-        </div>
+      <div className="container mx-auto px-4 py-8 bg-gray-100 dark:bg-gray-900">
+          <div className="">
+              <AnnouncementsSection announcements={announcements} formatDate={formatDate} />
+              <ScheduleDropdown 
+                  schedule={schedules[0]} 
+                  isOpen={isScheduleOpen} 
+                  setIsOpen={setIsScheduleOpen} 
+              />
+          </div>
       </div>
-      <div className="ml-10 mb-8">
-        <div className="bg-white dark:bg-gray-800 block rounded-xl border w-5/6 border-gray-800 p-4">
-            <h2 className="mt-1 mb-2 font-semibold text-base sm:text-lg text-black dark:text-white">
-            🗣🔊 Latest Announcements
-            </h2>
-            <hr className="my-3 dark:bg-white bg-black h-0.4"/>
-            {announcements.length === 0 ? (
-              <p className="ml-3 font-semibold text-base sm:text-lg text-black dark:text-white">No announcements yet.</p>
-            ) : (
-            announcements.map((announcement, index) => (
-            <div key={index}>
-              <h3 className="mt-2 ml-3 font-semibold text-base sm:text-lg text-black dark:text-white">📢 {announcement.title}</h3>
-              <p className="my-2 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">{announcement.content}</p>
-              <p className="my-2 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">{announcement.attachment}</p>
-              <p className="my-2 ml-3 block text-sm font-thin text-black dark:text-white">{announcement.publish_date}</p>
-            </div>
-              ))
-            )}
-        </div>
-      </div>
-      <div className="ml-10 mb-8">
-        <div className="bg-white dark:bg-gray-800 block rounded-xl border w-5/6 border-gray-800 p-4">
-            <h2 className="mt-1 mb-2 font-semibold text-base sm:text-lg text-black dark:text-white">
-            🗣🔊 Latest Events
-            </h2>
-            <hr className="my-3 dark:bg-white bg-black h-0.4"/>
-            {events.length === 0 ? (
-              <p className="ml-3 font-semibold text-base sm:text-lg text-black dark:text-white">No events yet.</p>
-            ) : (
-            events.map((events, index) => (
-            <div key={index}>
-              <h3 className="mt-2 ml-3 font-semibold text-base sm:text-lg text-black dark:text-white">📢 {events.title}</h3>
-              <p className="my-2 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">Starts: {events.start_date}</p>
-              <p className="my-2 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">Ends: {events.end_date}</p>
-              <p className="my-2 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">{events.event_type}</p>
-              <p className="my-2 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">Teachers: {events.related_teachers}</p>
-              <p className="my-2 ml-3 block text-sm font-medium sm:text-base text-black dark:text-white">Third_Parties: {events.related_entities}</p>
-            </div>
-              ))
-            )}
-        </div>
-      </div>
-      <hr className="my-3 dark:bg-white bg-black h-0.1"/>
-    </div>
   );
 }
+
+function AnnouncementsSection({ announcements, formatDate }) {
+  return (
+      <section className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+          <div className="flex justify-between border-b border-gray-500 dark:border-gray-700 ">
+              <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
+                  🔊 Latest Announcements
+              </h2>
+              <nav>
+                  <a href="/teacher-dashboard/announcements" className="flex items-center space-x-3 px-2 text-gray-900 dark:text-gray-200 dark:hover:text-gray-700 focus:outline-none hover:bg-gray-100 rounded-md">
+                      <span>all</span>
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 -2 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+                          <g stroke="none" strokeWidth={1} fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                              <g transform="translate(-1043.000000, -676.000000)" id="Group" stroke="currentColor" strokeWidth={2}>
+                              <g transform="translate(1041.000000, 672.000000)" id="Shape">
+                                  <path d="M13,5 L21,12 L13,19 M21,12 L3.00497942,12">
+                                  </path>
+                              </g>
+                              </g>
+                          </g>
+                      </svg>                
+                  </a>
+              </nav>
+          </div>
+          {announcements.length === 0 ? (
+              <p className="text-gray-600 dark:text-gray-300">No announcements yet.</p>
+          ) : (
+              <ul className="space-y-4">
+                  {announcements.map((announcement, index) => (
+                      <li key={index} className="border-b border-gray-500 dark:border-gray-700 pb-4 mt-4">
+                          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+                              📢 {announcement.title}
+                          </h3>
+                          <p className="mt-2 text-gray-600 dark:text-gray-300">{announcement.content}</p>
+                          {announcement.attachment && (
+                              <p className="mt-2 text-blue-500 dark:text-blue-300">{announcement.attachment}</p>
+                          )}
+                          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                              {formatDate(announcement.publish_date)}
+                          </p>
+                      </li>
+                  ))}
+              </ul>
+          )}
+      </section>
+);
+}
+
+function ScheduleDropdown({ schedule, isOpen, setIsOpen }) {
+  if (!schedule) return null;
+
+  return (
+      <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div 
+              className="flex justify-between items-center cursor-pointer"
+              onClick={() => setIsOpen(!isOpen)}
+          >
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                  📅 Latest Schedule
+              </h2>
+              <svg 
+                  className={`w-6 h-6 transition-transform ${isOpen ? 'transform rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24" 
+                  xmlns="http://www.w3.org/2000/svg"
+              >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+          </div>
+          {isOpen && (
+              <div className="mt-4">
+                  <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{schedule.title}</h3>
+                  <p className="mt-2 text-gray-600 dark:text-gray-300">{schedule.description}</p>
+                  {schedule.file && (
+                      <a 
+                          href={schedule.file} 
+                          className="mt-2 text-blue-500 dark:text-blue-300 hover:underline"
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                      >
+                          View Schedule File
+                      </a>
+                  )}
+              </div>
+          )}
+      </div>
+);
+}
+
 
 export default HomePage;

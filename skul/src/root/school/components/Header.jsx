@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { UserContext } from '../../../contexts/UserContext';
 import { AuthContext } from '../../../contexts/AuthContext'
 import { logout } from '../../../components/cookie/logout';
+import Avatar from '../../../components/shared/Avatars';
 
 function Header({ handleSidebar }) {
     const { user } = useContext(UserContext);
@@ -94,8 +95,10 @@ function Header({ handleSidebar }) {
       </svg>
     );
 
+    
+
     return (
-      <div className="bg-white dark:bg-black shadow w-screen">
+      <div className="bg-white dark:bg-black shadow w-screen border-b border-gray-500 dark:border-gray-700">
         <div className="mx-auto">
           <div className="flex justify-between items-center py-4 px-4">
             <h1 className="text-xl font-semibold text-black dark:text-white">Skul</h1>
@@ -115,7 +118,11 @@ function Header({ handleSidebar }) {
                     <div className="rounded-lg bg-base-300 p-3 drop-shadow-xl divide-y divide-neutral">
                       <div className="flex space-x-4 items-center p-4">
                         <div className="flex mr-auto items-center space-x-4">
-                          <img src="https://avatars.githubusercontent.com/u/26052038?v=4" alt="Name" className="w-16 h-16 shrink-0 rounded-full" />
+                        <Avatar 
+                          avatarUrl={user.user?.avatar_url} 
+                          name={`${user.full_name}`} 
+                          size={32} 
+                        />
                           <div className="space-y-2 flex flex-col flex-1 truncate">
                             <div className="relative leading-tight ">
                               <span className="flex">

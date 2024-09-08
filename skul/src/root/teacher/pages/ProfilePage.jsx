@@ -66,12 +66,12 @@ function ProfilePage() {
         <div className="flex items-center space-x-4 mb-6">
         <Avatar 
           avatarUrl={user.user?.avatar_url} 
-          name={`profileData.school_info.full_name`} 
+          name={`profileData.teacher_info.full_name`} 
           size={32} 
           className="w-16 h-16 rounded-full"
         />
           <div>
-            <h2 className="text-xl font-semibold text-white dark:text-gray-100">{profileData.school_info.full_name}</h2>
+            <h2 className="text-xl font-semibold text-white dark:text-gray-100">{profileData.teacher_info.first_name} {profileData.teacher_info.last_name}</h2>
             <p className="text-gray-300 dark:text-gray-400">{profileData.email}</p>
           </div>
         </div>
@@ -79,11 +79,21 @@ function ProfilePage() {
         {isEditing ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 dark:text-gray-400">School Name</label>
+              <label className="block text-sm font-medium text-gray-300 dark:text-gray-400">First Name</label>
               <input
                 type="text"
-                name="full_name"
-                value={profileData.school_info.full_name}
+                name="first_name"
+                value={profileData.teacher_info.first_name}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 dark:text-gray-400">Last Name</label>
+              <input
+                type="text"
+                name="last_name"
+                value={profileData.teacher_info.last_name}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
@@ -94,16 +104,6 @@ function ProfilePage() {
                 type="text"
                 name="username"
                 value={profileData.username}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 dark:text-gray-400">Location</label>
-              <input
-                type="text"
-                name="location"
-                value={profileData.school_info.location}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
@@ -126,16 +126,12 @@ function ProfilePage() {
         ) : (
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-300 dark:text-gray-400">School Name</h3>
-              <p className="text-white">{profileData.school_info.full_name}</p>
+              <h3 className="text-sm font-medium text-gray-300 dark:text-gray-400">Full Name</h3>
+              <p className="text-white">{profileData.teacher_info.first_name} {profileData.teacher_info.last_name}</p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-gray-300 dark:text-gray-400">School Username</h3>
+              <h3 className="text-sm font-medium text-gray-300 dark:text-gray-400">Username</h3>
               <p className="text-white">{profileData.username}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-gray-300 dark:text-gray-400">Location</h3>
-              <p className="text-white">{profileData.school_info.location}</p>
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-300 dark:text-gray-400">Email</h3>

@@ -11,6 +11,7 @@ function Header({ handleSidebar }) {
     const { setIsAuthenticated } = useContext(AuthContext)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    console.log(user)
 
     async function handleLogout() {
       const response = await logout();
@@ -135,7 +136,7 @@ function Header({ handleSidebar }) {
                       </div>
                       <div aria-label="navigation" className="py-2">
                         <nav className="grid gap-1">
-                          <a href="/teacher-dashboard/profile" className="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-900 dark:text-gray-200 dark:hover:text-gray-700 focus:outline-none hover:bg-gray-100 rounded-md">
+                          <a href="/student-dashboard/profile" className="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-lg text-gray-900 dark:text-gray-200 dark:hover:text-gray-700 focus:outline-none hover:bg-gray-100 rounded-md">
                             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
                               <g stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
                                 <g transform="translate(-140.000000, -2159.000000)" fill="currentColor">
