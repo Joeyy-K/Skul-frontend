@@ -1,57 +1,71 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { TeacherContext } from '../contexts/teachercontext'
-import Cookies from 'js-cookie'
+import React, { useState, useEffect, useContext } from 'react';
+import { TeacherContext } from '../contexts/teachercontext';
+import Cookies from 'js-cookie';
+import AssignmentSubmissionStatus from '../components/AssignmentSubmissionStatus';
+import SubmittedAssignments from '../components/SubmittedAssignments';
 
 function Assignment({ assignment, onDelete }) {
+  const [showSubmissionStatus, setShowSubmissionStatus] = useState(false);
+  const [showSubmittedAssignments, setShowSubmittedAssignments] = useState(false);
+  const { teacher } = useContext(TeacherContext);
+
   const handleDelete = () => {
     fetch(`http://127.0.0.1:8000/school/assignments/${assignment.id}/`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Token ${Cookies.get('userToken')}`
+      }
     })
-    .then(() => {
-      onDelete(assignment.id)
-    })
-  }
+    .then(() => onDelete(assignment.id));
+  };
 
   return (
-    <div className="bg-gray-200 dark:bg-gray-700 p-5 rounded-md">
-      <h2 className="text-lg text-gray-700 dark:text-white mb-2">{assignment.title}</h2>
-      <p className="text-gray-600 dark:text-gray-400 mb-4">{assignment.description}</p>
-      <iframe src={assignment.file} className="w-full h-64 border-none" />
-      <a
-        href={assignment.file}
-        download
-        className="mt-4 px-4 py-2 mr-3 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-      >
-        Download
-      </a>
-      <button
-        onClick={handleDelete}
-        className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md cursor-pointer hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-      >
-        Remove
-      </button>    
-    </div>
-  )
-}
-
-
-function AssignmentList({ assignments, onDelete }) {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
-        Your Assignments
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {assignments.map(assignment => (
-          <Assignment key={assignment.id} assignment={assignment} onDelete={onDelete} />
-        ))}
+    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-6">
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{assignment.title}</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{assignment.grade_name}</p>
+      <p className="text-gray-700 dark:text-gray-300 mb-4">{assignment.description}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        Due: {new Date(assignment.due_date).toLocaleString()}
+      </p>
+      <div className="flex flex-wrap gap-2 mb-4">
+        {assignment.file && (
+          <a 
+            href={assignment.file} 
+            download 
+            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Download attachment
+          </a>
+        )}
+        <button 
+          onClick={handleDelete}
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+        >
+          Remove
+        </button>
+        <button 
+          onClick={() => setShowSubmissionStatus(!showSubmissionStatus)}
+          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+        >
+          {showSubmissionStatus ? 'Hide' : 'Show'} Submission Status
+        </button>
+        {teacher && (
+          <button 
+            onClick={() => setShowSubmittedAssignments(!showSubmittedAssignments)}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+          >
+            {showSubmittedAssignments ? 'Hide' : 'View'} Submitted Assignments
+          </button>
+        )}
       </div>
+      {showSubmissionStatus && <AssignmentSubmissionStatus assignmentId={assignment.id} />}
+      {showSubmittedAssignments && teacher && <SubmittedAssignments assignmentId={assignment.id} />}
     </div>
-  )
+  );
 }
 
-function AssignmentForm({ onCreate }) {
-  const { teacher } = useContext(TeacherContext)
+function AssignmentForm({ onCreate, grades }) {
+  const { teacher } = useContext(TeacherContext);
   const [newAssignment, setNewAssignment] = useState({
     title: '',
     description: '',
@@ -59,147 +73,187 @@ function AssignmentForm({ onCreate }) {
     grade: '',
     teacher: teacher ? teacher.id : null,
     file: null,
-  })
+  });
 
   const handleChange = (event) => {
-    if (event.target.name === 'file') {
-      setNewAssignment({ ...newAssignment, file: event.target.files[0] })
-    } else {
-      setNewAssignment({ ...newAssignment, [event.target.name]: event.target.value })
-    }
-  }
+    const { name, value, files } = event.target;
+    setNewAssignment(prev => ({
+      ...prev,
+      [name]: files ? files[0] : value
+    }));
+  };
 
   const handleSubmit = (event) => {
-    event.preventDefault()
-    const formData = new FormData()
+    event.preventDefault();
+    const formData = new FormData();
     Object.keys(newAssignment).forEach(key => {
-      formData.append(key, newAssignment[key])
-    })
+      formData.append(key, newAssignment[key]);
+    });
+
     fetch('http://127.0.0.1:8000/school/assignments/', {
       method: 'POST',
+      headers: {
+        'Authorization': `Token ${Cookies.get('userToken')}`
+      },
       body: formData,
     })
-    .then(async response => {
-      if (!response.ok) {
-        const error = await response.json()
-        throw error
-      }
-      return response.json();
+    .then(response => response.json())
+    .then(data => {
+      onCreate(data);
+      setNewAssignment({
+        title: '',
+        description: '',
+        due_date: '',
+        grade: '',
+        teacher: teacher ? teacher.id : null,
+        file: null,
+      });
     })
-    .then(data => onCreate(data))
-    .catch(error => {
-      alert(`Error: ${error.file}`);
-    });
-  }
+    .catch(error => alert(`Error: ${JSON.stringify(error)}`));
+  };
 
   return (
-    <div className="bg-gray-200 dark:bg-gray-800 p-6 rounded-md shadow-md mb-6">
-      <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
-        Create New Assignment
-      </h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-800 dark:text-white font-bold mb-2" htmlFor="title">
-            Title:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 dark:text-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="title"
-            name="title"
-            type="text"
-            placeholder="Enter assignment title"
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-800 dark:text-white font-bold mb-2" htmlFor="description">
-            Description:
-          </label>
-          <textarea
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 dark:text-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="description"
-            name="description"
-            placeholder="Enter assignment description"
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-800 dark:text-white font-bold mb-2" htmlFor="due_date">
-            Due Date:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 dark:text-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="due_date"
-            name="due_date"
-            type="datetime-local"
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-800 dark:text-white font-bold mb-2" htmlFor="file">
-            File:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 dark:text-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="file"
-            name="file"
-            type="file"
-            onChange={handleChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-800 dark:text-white font-bold mb-2" htmlFor="grade">
-            Grade:
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 dark:text-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="grade"
-            name="grade"
-            type="text"
-            placeholder="Enter grade"
-            onChange={handleChange}
-          />
-        </div>
-        <button
-          className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline dark:bg-indigo-700 dark:hover:bg-indigo-800"
-          type="submit"
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-8">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Create New Assignment</h2>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="title">
+          Title
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="title"
+          name="title"
+          type="text"
+          value={newAssignment.title}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="description">
+          Description
+        </label>
+        <textarea
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="description"
+          name="description"
+          value={newAssignment.description}
+          onChange={handleChange}
+          required
+          rows="4"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="due_date">
+          Due Date
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="due_date"
+          name="due_date"
+          type="datetime-local"
+          value={newAssignment.due_date}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="grade">
+          Grade
+        </label>
+        <select
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          name="grade"
+          value={newAssignment.grade}
+          onChange={handleChange}
+          required
         >
-          Create
-        </button>
-      </form>
-    </div>
-  )
+          <option value="">Select a grade</option>
+          {grades.map(grade => (
+            <option key={grade.id} value={grade.id}>
+              {grade.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="mb-6">
+        <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="file">
+          File
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="file"
+          name="file"
+          type="file"
+          onChange={handleChange}
+        />
+      </div>
+      <button 
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline"
+      >
+        Create Assignment
+      </button>
+    </form>
+  );
 }
 
 function AssignmentPage() {
-    const [assignments, setAssignments] = useState([])
-    let userToken = Cookies.get('userToken');
+  const [assignments, setAssignments] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const { teacher } = useContext(TeacherContext);
+  const userToken = Cookies.get('userToken');
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
-    useEffect(() => {
-      fetch('http://127.0.0.1:8000/school/assignments/', {
+  useEffect(() => {
+    // Fetch assignments
+    fetch('http://127.0.0.1:8000/school/assignments/', {
+      headers: {
+        'Authorization': `Token ${userToken}`
+      }
+    })
+    .then(response => response.json())
+    .then(data => setAssignments(data));
+
+    // Fetch grades for the current school
+    if (teacher && teacher.school) {
+      fetch(`http://127.0.0.1:8000/school/grades/?school_id=${teacher.school}`, {
         headers: {
           'Authorization': `Token ${userToken}`
         }
       })
       .then(response => response.json())
-      .then(data => setAssignments(data));
-    }, [])
-
-    const handleDelete = (id) => {
-      setAssignments(assignments.filter(assignment => assignment.id !== id))
+      .then(data => setGrades(data));
     }
+  }, [teacher, userToken]);
 
-    const handleCreate = (newAssignment) => {
-      setAssignments(prevAssignments => [...prevAssignments, newAssignment])
-    }
+  const handleDelete = (id) => {
+    setAssignments(assignments.filter(assignment => assignment.id !== id));
+  };
 
-    return (
-      <div className="bg-gray-200 dark:bg-gray-800 p-6 rounded-md shadow-md">
-        <AssignmentForm onCreate={handleCreate} />
-        <AssignmentList assignments={assignments} onDelete={handleDelete} />
+  const handleCreate = (newAssignment) => {
+    setAssignments(prevAssignments => [...prevAssignments, newAssignment]);
+    setShowCreateForm(false);
+  };
+
+  return (
+    <div className="container mx-auto py-8 px-4 bg-gray-100 dark:bg-gray-900">
+      <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">Assignment Management</h1>
+      <button 
+        onClick={() => setShowCreateForm(!showCreateForm)}
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md mb-4"
+      >
+        {showCreateForm ? 'Hide Create Form' : 'Create New Assignment'}
+      </button>
+      {showCreateForm && <AssignmentForm onCreate={handleCreate} grades={grades} />}
+      <div>
+        <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Your Assignments</h2>
+        {assignments.map(assignment => (
+          <Assignment key={assignment.id} assignment={assignment} onDelete={handleDelete} />
+        ))}
       </div>
-  )
+    </div>
+  );
 }
 
-export default AssignmentPage
-
+export default AssignmentPage;

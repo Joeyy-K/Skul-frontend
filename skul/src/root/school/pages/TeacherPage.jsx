@@ -52,36 +52,42 @@ function TeacherPage() {
     };
 
     const handleUnassignTeacher = (teacherId) => {
-      fetch(`http://127.0.0.1:8000/school/unassign-teacher/${teacherId}/`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Token ${userToken}`,
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data.message);
-          fetchTeachers();
+        fetch(`http://127.0.0.1:8000/school/unassign-teacher/${teacherId}/`, {
+            method: 'POST',
+            headers: {
+            'Authorization': `Token ${userToken}`,
+            },
         })
-        .catch(error => console.error('Error:', error));
-    };
+            .then(response => response.json())
+            .then(data => {
+                toast.success(data.message);
+                fetchTeachers();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error('Failed to unassign teacher');
+            });
+        };
 
     const handleDeleteTeacher = (teacherId) => {
-      if (window.confirm('Are you sure you want to delete this teacher?')) {
-        fetch(`http://127.0.0.1:8000/school/delete-teacher/${teacherId}/`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Token ${userToken}`,
-          },
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data.message);
-            fetchTeachers(); 
-          })
-          .catch(error => console.error('Error:', error));
-      }
-    };
+        if (window.confirm('Are you sure you want to delete this teacher?')) {
+            fetch(`http://127.0.0.1:8000/school/delete-teacher/${teacherId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Token ${userToken}`,
+            },
+            })
+            .then(response => response.json())
+            .then(data => {
+                toast.success(data.message);
+                fetchTeachers(); 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error('Failed to delete teacher');
+            });
+        }
+        };
 
     const filteredTeachers = useMemo(() => {
         return teachers.filter(teacher => 

@@ -8,7 +8,7 @@ import TeacherPage from './pages/TeacherPage';
 import ChannelPage from './pages/ChannelPage';
 import MessagePage from './pages/MessagePage';
 import ProfilePage from './pages/ProfilePage';
-import AnnouncementPage from './pages/AnnouncementPage';
+import SchedulesPage from './pages/SchedulesPage';
 
 function SchoolLayout() {
   return (
@@ -21,9 +21,9 @@ function SchoolLayout() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/students" element={<StudentPage />} />
           <Route path="/teachers" element={<TeacherPage />} />
-          <Route path="/channel/" element={<ChannelPage />} />
+          <Route path="/channel" element={<ChannelPage />} />
           <Route path="/messages/:channelId" element={<MessagePage />} />
-          <Route path="/announcements/" element={<AnnouncementPage />} />
+          <Route path="/schedules" element={<SchedulesPage />} />
         </Routes>
       </main>
     </div>

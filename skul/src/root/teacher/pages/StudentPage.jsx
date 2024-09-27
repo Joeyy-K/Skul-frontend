@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { TeacherContext } from '../contexts/teachercontext';
 import CreateStudentProfile from '../forms/CreateStudentProfile';
 import Cookies from 'js-cookie';
+import Avatar from '../../../components/shared/Avatars';
 
 const StudentPage = () => {
   const [students, setStudents] = useState([]);
@@ -47,23 +48,29 @@ const StudentPage = () => {
           <table className="w-full table-auto">
             <thead>
               <tr className="bg-gray-200 dark:bg-gray-700">
+                <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200"></th>
                 <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">ID</th>
                 <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">Name</th>
                 <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">Email</th>
                 <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">School</th>
-                <th className="px-4 py-2 text-left text-gray-800 dark:text-gray-200">Grade</th>
               </tr>
             </thead>
             <tbody>
               {students.map((student) => (
                 <tr key={student.id} className="border-b border-gray-200 dark:border-gray-700">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <Avatar 
+                                        avatarUrl={student.user?.avatar_url} 
+                                        name={`${student.first_name} ${student.last_name}`} 
+                                        size={32} 
+                                    />
+                                </td>
                   <td className="px-4 py-2 text-gray-600 dark:text-gray-300">{student.user.id}</td>
                   <td className="px-4 py-2 text-gray-600 dark:text-gray-300">
                     {student.first_name} {student.last_name}
                   </td>
                   <td className="px-4 py-2 text-gray-600 dark:text-gray-300">{student.user.email}</td>
                   <td className="px-4 py-2 text-gray-600 dark:text-gray-300">{student.school_name}</td>
-                  <td className="px-4 py-2 text-gray-600 dark:text-gray-300">{student.grade_name}</td>
                 </tr>
               ))}
             </tbody>

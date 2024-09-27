@@ -4,13 +4,12 @@ import NavbarAndHeader from './components/NavbarAndHeader';
 import HomePage from './pages/HomePage';
 import StudentPage from './pages/StudentPage';
 import GradesPage from './pages/GradesPage';
-import SchedulePage from './pages/SchedulePage';
+import SchedulesPage from './pages/SchedulesPage';
 import ChannelPage from './pages/ChannelPage';
 import FeedbackPage from './pages/FeedbackPage';
 import MessagePage from './pages/MessagePage';
 import AssignementPage from './pages/AssignementPage';
 import ProfilePage from './pages/ProfilePage';
-import AnnouncementPage from './pages/AnnouncementPage';
 
 function TeacherLayout() {
   return (
@@ -21,13 +20,12 @@ function TeacherLayout() {
           <Route path="/" element={<HomePage />} />
           <Route path="/students" element={<StudentPage />} />
           <Route path="/grades" element={<GradesPage />} />
-          <Route path="/schedule" element={<SchedulePage />} />
+          <Route path="/schedules" element={<SchedulesPage />} />
           <Route path="/channel" element={<ChannelPage />} />
           <Route path="/assignements" element={<AssignementPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/messages/:channelId" element={<MessagePage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/announcements/" element={<AnnouncementPage />} />
         </Routes>
       </main>
     </div>

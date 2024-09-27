@@ -2,6 +2,8 @@ import React, { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { fetchCSRFToken } from './components/cookie/csrf'
 import AppWrapper from './components/shared/AppWrapper'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterForm = lazy(() => import('./auth/forms/Register'))
 const AuthLayout = lazy(() => import('./auth/AuthLayout'))
@@ -19,11 +21,12 @@ export default function App() {
 
   return (
     <AppWrapper>
+      
       <Suspense fallback={
         <div className="flex justify-center items-center h-screen">
-          <div className="rounded-full h-20 w-20 bg-violet-800 animate-ping"></div>
+          <div className="rounded-full h-20 w-20 bg-violet-800 dark:bg-gray-500 animate-ping"></div>
         </div>
-      }>
+      }><ToastContainer />
         <Routes>
           {/* public routes */}
           <Route element={<AuthLayout />}>

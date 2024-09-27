@@ -100,7 +100,7 @@ function GradesPage() {
 
     const handleAssignTeacher = async (gradeId, teacherId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/assign_teacher/`, {
+            const response = await fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/teacher/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,7 +110,6 @@ function GradesPage() {
             });
 
             if (response.ok) {
-                // Update the grades state
                 setGrades(prevGrades =>
                     prevGrades.map(grade =>
                         grade.id === gradeId

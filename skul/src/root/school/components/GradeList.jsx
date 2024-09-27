@@ -100,17 +100,19 @@ const GradeList = ({
             const results = await Promise.all(promises);
 
             if (results.every(response => response.ok)) {
+                toast.success('Students successfully added to grade');
                 // All students were successfully added
                 handleCloseAddStudentModal();
                 // Refresh the grade list or update the student count
                 // You might want to implement a function to refresh the grades data here
             } else {
-                console.error('Failed to add one or more students to grade');
+                toast.error('Failed to add one or more students to grade');
+              }
+            } catch (error) {
+              console.error('Error adding students to grade:', error);
+              toast.error('An error occurred while adding students');
             }
-        } catch (error) {
-            console.error('Error adding students to grade:', error);
-        }
-    };
+        };
 
     return (
         <>

@@ -41,10 +41,13 @@ const StudentList = ({ students, grades = [], onStudentUpdate }) => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data.message);
+            toast.success(data.message);
             onStudentUpdate();
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            toast.error('Failed to unassign student');
+        });
     };
 
     const onDeleteStudent = (studentId) => {
@@ -57,19 +60,22 @@ const StudentList = ({ students, grades = [], onStudentUpdate }) => {
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data.message);
-                onStudentUpdate();
+            toast.success(data.message);
+            onStudentUpdate();
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+            console.error('Error:', error);
+            toast.error('Failed to delete student');
+            });
         }
-    };
+        };
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
     };
 
     const handleActionClick = (e, action, studentId) => {
-        e.stopPropagation();  // Prevent the row click event from firing
+        e.stopPropagation(); 
         if (action === 'unassign') {
             onUnassignStudent(studentId);
         } else if (action === 'delete') {
