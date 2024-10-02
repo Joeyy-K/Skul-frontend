@@ -8,7 +8,6 @@ import TeacherList from '../components/TeacherList';
 function TeacherPage() {
     const { school, loading } = useSchoolData();
     const [teachers, setTeachers] = useState([]);
-    const [grades, setGrades] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [sortBy, setSortBy] = useState('name');
@@ -18,7 +17,6 @@ function TeacherPage() {
     useEffect(() => {
         if (school) {
             fetchTeachers();
-            fetchGrades();
         }
     }, [school]);
 
@@ -31,18 +29,6 @@ function TeacherPage() {
             setTeachers(data);
         } catch (error) {
             console.error('Error fetching teachers:', error);
-        }
-    };
-
-    const fetchGrades = async () => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/school/grades/?school_id=${school.id}`, {
-                headers: { 'Authorization': `Token ${userToken}` },
-            });
-            const data = await response.json();
-            setGrades(data);
-        } catch (error) {
-            console.error('Error fetching grades:', error);
         }
     };
 
@@ -162,7 +148,6 @@ function TeacherPage() {
                     </div>
                     <TeacherList
                         teachers={filteredTeachers}
-                        grades={grades}
                         onUnassignTeacher={handleUnassignTeacher}
                         onDeleteTeacher={handleDeleteTeacher}
                     />

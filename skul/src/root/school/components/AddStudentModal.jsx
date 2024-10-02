@@ -23,7 +23,7 @@ const AddStudentModal = ({ gradeId, schoolId, onAddStudent, userToken, onClose }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onAddStudent(selectedStudents);  // Pass the array of selected student IDs
+        onAddStudent(selectedStudents);  // passing the array of selected student IDs fyi
         onClose();
     };
 

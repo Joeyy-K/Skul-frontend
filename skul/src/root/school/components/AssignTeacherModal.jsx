@@ -30,7 +30,7 @@ const AssignTeacherModal = ({ gradeId, schoolId, onAssignTeacher, userToken, onC
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center">
             <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-xl">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">Assign Teacher to Grade</h2>
+                    <h2 className="text-xl font-bold dark:text-gray-200">Assign Teacher to Grade</h2>
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
                         <FiX size={24} />
                     </button>

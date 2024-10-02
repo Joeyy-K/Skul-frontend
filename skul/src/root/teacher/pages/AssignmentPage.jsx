@@ -206,7 +206,6 @@ function AssignmentPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
-    // Fetch assignments
     fetch('http://127.0.0.1:8000/school/assignments/', {
       headers: {
         'Authorization': `Token ${userToken}`
@@ -215,7 +214,6 @@ function AssignmentPage() {
     .then(response => response.json())
     .then(data => setAssignments(data));
 
-    // Fetch grades for the current school
     if (teacher && teacher.school) {
       fetch(`http://127.0.0.1:8000/school/grades/?school_id=${teacher.school}`, {
         headers: {

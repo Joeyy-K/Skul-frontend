@@ -8,7 +8,7 @@ import SchedulesPage from './pages/SchedulesPage';
 import ChannelPage from './pages/ChannelPage';
 import FeedbackPage from './pages/FeedbackPage';
 import MessagePage from './pages/MessagePage';
-import AssignementPage from './pages/AssignementPage';
+import AssignmentPage from './pages/AssignmentPage';
 import ProfilePage from './pages/ProfilePage';
 
 function TeacherLayout() {
@@ -22,7 +22,7 @@ function TeacherLayout() {
           <Route path="/grades" element={<GradesPage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
           <Route path="/channel" element={<ChannelPage />} />
-          <Route path="/assignements" element={<AssignementPage />} />
+          <Route path="/assignments" element={<AssignmentPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/messages/:channelId" element={<MessagePage />} />
           <Route path="/profile" element={<ProfilePage />} />

@@ -45,7 +45,7 @@ function StudentsPage() {
                 headers: { 'Authorization': `Token ${userToken}` },
             });
             const data = await response.json();
-            setGrades([{ id: 'all', name: 'All Grades' }, ...data]);
+            setGrades([{ id: 'all', name: 'All Students' }, ...data]);
         } catch (error) {
             console.error('Error fetching grades:', error);
         }

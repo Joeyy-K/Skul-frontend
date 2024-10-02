@@ -4,46 +4,22 @@ import SendMessage from '../components/SendMessage';
 import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../../contexts/UserContext';
-import { TeacherContext } from '../contexts/teachercontext';
+import { useTeacherData } from '../contexts/useTeacherData';
 
 function MessagePage() {
-    const { teacher } = useContext(TeacherContext)
+    const { teacher, loading } = useTeacherData();
     console.log(teacher)
     const { channelId } = useParams();
     const [messages, setMessages] = useState([]);
     const userToken = Cookies.get('userToken');
     const { user } = useContext(UserContext);
-    const [users, setUsers] = useState([]);
     const [channelUsers, setChannelUsers] = useState([]);
-    const [showAddUsers, setShowAddUsers] = useState(false);
     const [showChannelUsers, setShowChannelUsers] = useState(false);
-
-    useEffect(() => {
-        if (channelId) {
-        fetchMessages(channelId);
-        fetchUsers();
-        fetchChannelUsers(channelId);
-        }
-    }, [channelId]);
-
+    console.log("Rendering MessagePage. Channel Users:", channelUsers);
+    console.log("Current user:", user);
+    console.log("Current channelId:", channelId);
     const handleNewMessage = (newMessage) => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-    };
-
-    const fetchUsers = async () => {
-        if (teacher) {
-          try {
-            const response = await fetch(`http://127.0.0.1:8000/school/school/${teacher.school}/users/`, {
-              headers: {
-                'Authorization': `Token ${userToken}`,
-              },
-            });
-            const data = await response.json();
-            setUsers(data);
-          } catch (error) {
-            console.error('Error fetching users:', error);
-          }
-        }
     };
 
     const fetchMessages = async (channelId) => {
@@ -60,6 +36,23 @@ function MessagePage() {
         console.error('Error fetching messages:', error);
         }
     };
+
+    useEffect(() => {
+        if (channelId) {
+          console.log("Fetching data for channel:", channelId);
+          fetchMessages(channelId);
+          fetchChannelUsers(channelId);
+        } else {
+          console.log("Missing channelId");
+        }
+      }, [channelId]);
+
+    const toggleAddUsers = () => {
+        setShowAddUsers((prevShowAddUsers) => !prevShowAddUsers);
+        if (showChannelUsers) {
+          setShowChannelUsers(false);
+        }
+    };
       
     const toggleChannelUsers = () => {
         setShowChannelUsers((prevShowChannelUsers) => !prevShowChannelUsers);
@@ -70,21 +63,27 @@ function MessagePage() {
 
     const fetchChannelUsers = async (channelId) => {
         try {
-        const response = await fetch(`http://127.0.0.1:8000/school/channels/${channelId}/users/`, {
+          console.log("Fetching users for channel:", channelId);
+          const response = await fetch(`http://127.0.0.1:8000/school/channels/${channelId}/users/`, {
             headers: {
-            'Authorization': `Token ${userToken}`,
+              'Authorization': `Token ${userToken}`,
             },
-        });
-        const data = await response.json();
-        setChannelUsers(data);
+          });
+          const data = await response.json();
+          console.log("Fetched channel users data:", data);
+          setChannelUsers(data);
         } catch (error) {
-        console.error('Error fetching channel users:', error);
+          console.error('Error fetching channel users:', error);
         }
-    };
+      };
+
+    if (loading) {
+        return <div>Loading...</div>; 
+      }
 
     return channelId ? (
-        <div className="h-full flex flex-col">
-        <div className="bg-gray-200 dark:bg-gray-800 flex-1 overflow-y-scroll px-4 py-2 pb-56">
+        <div className="min-h-full flex flex-col">
+        <div className="flex-1 overflow-y-scroll px-4 py-2">
             <div className="flex justify-between items-center mb-4">
             <h2 className="font-medium dark:text-white">Channel Messages</h2>
             <div className="flex">
@@ -116,19 +115,23 @@ function MessagePage() {
             )}
             <div>
             {messages.map((message) => {
-                const sender = users.find((user) => user.id === message.sender);
-                return (
-                <div key={message.id} className={`mb-2 ${message.sender === user.user.id ? 'text-right' : ''}`}>
-                    <div className="text-sm mb-1 dark:text-white">{sender ? sender.username : 'Unknown'}</div>
+            console.log("Processing message:", message);
+            const sender = channelUsers.find((user) => user.id === message.sender);
+            console.log("Found sender:", sender);
+            const username = sender ? sender.username : teacher.school_name;
+            
+            return (
+                <div key={message.id} className={`mb-2 ${message.sender === (user?.user?.id ?? null) ? 'text-right' : ''}`}>
                     <div
-                    className={`inline-block rounded-lg p-2 shadow max-w-sm ${
-                        message.sender === user.user.id ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-900 dark:text-white'
-                    }`}
+                        className={`inline-block rounded-lg p-2 shadow max-w-sm ${
+                        message.sender === (user?.user?.id ?? null) ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-900 dark:text-white'
+                        }`}
                     >
-                    {message.content}
+                        {message.content}
                     </div>
+                    <div className="text-xs mt-1 dark:text-white">{username}</div>
                 </div>
-                );
+            );
             })}
             </div>
         </div>

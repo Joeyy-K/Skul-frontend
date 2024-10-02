@@ -4,11 +4,10 @@ import ProfileModal from './ProfileModal';
 import AddStudentModal from './AddStudentModal';
 import { FiChevronLeft, FiChevronRight, FiTrash2, FiUserPlus, FiUserCheck } from 'react-icons/fi';
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 const GradeList = ({
     grades,
-    schools,
-    teachers,
     onDeleteGrade,
     onAssignTeacher,
     userToken,
@@ -22,23 +21,13 @@ const GradeList = ({
     const [selectedGrade, setSelectedGrade] = useState(null);
     const itemsPerPage = 10;
 
-    const gradesWithTeacherName = useMemo(() => {
-        return grades.map((grade) => {
-            const teacher = teachers.find((t) => t.id === grade.teacher);
-            return {
-                ...grade,
-                teacherName: teacher
-                    ? `${teacher.first_name} ${teacher.last_name}`
-                    : 'No teacher assigned',
-            };
-        });
-    }, [grades, teachers]);
+    const currentGrades = useMemo(() => {
+        const indexOfLastGrade = currentPage * itemsPerPage;
+        const indexOfFirstGrade = indexOfLastGrade - itemsPerPage;
+        return grades.slice(indexOfFirstGrade, indexOfLastGrade);
+    }, [grades, currentPage]);
 
-    const indexOfLastGrade = currentPage * itemsPerPage;
-    const indexOfFirstGrade = indexOfLastGrade - itemsPerPage;
-    const currentGrades = gradesWithTeacherName.slice(indexOfFirstGrade, indexOfLastGrade);
-
-    const totalPages = Math.ceil(gradesWithTeacherName.length / itemsPerPage);
+    const totalPages = Math.ceil(grades.length / itemsPerPage);
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
@@ -68,8 +57,8 @@ const GradeList = ({
 
     const gradeFields = [
         { label: 'Name', value: (grade) => grade.name },
-        { label: 'School', value: (grade) => schools.find((school) => school.id === grade.school)?.full_name },
-        { label: 'Teacher', value: (grade) => grade.teacherName },
+        { label: 'School', value: (grade) => grade.school_name || 'N/A' },
+        { label: 'Teacher', value: (grade) => grade.teacher_name || 'N/A' },
         { label: 'Student Count', value: (grade) => grade.student_count || 'N/A' },
     ];
 
@@ -83,7 +72,6 @@ const GradeList = ({
 
     const handleAddStudent = async (studentIds) => {
         try {
-            // Ensure studentIds is always an array
             const studentIdsArray = Array.isArray(studentIds) ? studentIds : [studentIds];
             
             const promises = studentIdsArray.map(studentId =>
@@ -101,18 +89,16 @@ const GradeList = ({
 
             if (results.every(response => response.ok)) {
                 toast.success('Students successfully added to grade');
-                // All students were successfully added
                 handleCloseAddStudentModal();
-                // Refresh the grade list or update the student count
                 // You might want to implement a function to refresh the grades data here
             } else {
                 toast.error('Failed to add one or more students to grade');
-              }
-            } catch (error) {
-              console.error('Error adding students to grade:', error);
-              toast.error('An error occurred while adding students');
             }
-        };
+        } catch (error) {
+            console.error('Error adding students to grade:', error);
+            toast.error('An error occurred while adding students');
+        }
+    };
 
     return (
         <>
@@ -151,10 +137,10 @@ const GradeList = ({
                                     {grade.name}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    {schools.find((school) => school.id === grade.school)?.full_name}
+                                    {grade.school_name || 'N/A'}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    {grade.teacherName}
+                                    {grade.teacher_name || 'N/A'}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button

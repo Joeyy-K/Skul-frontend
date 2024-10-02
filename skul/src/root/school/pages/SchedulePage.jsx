@@ -6,6 +6,7 @@ const SchedulePage = () => {
     const { user } = useContext(UserContext);
     const [schedules, setSchedules] = useState([]);
     const userToken = Cookies.get('userToken');
+    console.log(user)
 
     useEffect(() => {
         if (user) {

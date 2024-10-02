@@ -9,7 +9,6 @@ function GradesPage() {
     const { school, loading } = useSchoolData();
     const [grades, setGrades] = useState([]);
     const [teachers, setTeachers] = useState([]);
-    const [schools, setSchools] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [sortBy, setSortBy] = useState('name');
@@ -20,7 +19,6 @@ function GradesPage() {
         if (school) {
             fetchGrades();
             fetchTeachers();
-            fetchSchools();
         }
     }, [school]);
 
@@ -35,18 +33,6 @@ function GradesPage() {
             console.error('Error fetching grades:', error);
         }
     };
-
-    const fetchSchools = async () => {
-      try {
-          const response = await fetch(`http://127.0.0.1:8000/school/schools/`, {
-              headers: { 'Authorization': `Token ${userToken}` },
-          });
-          const data = await response.json();
-          setSchools(data);
-      } catch (error) {
-          console.error('Error fetching schools:', error);
-      }
-  };
 
     const fetchTeachers = async () => {
         try {
@@ -185,8 +171,6 @@ function GradesPage() {
                     </div>
                     <GradeList
                         grades={grades}
-                        schools={schools}
-                        teachers={teachers}
                         onDeleteGrade={handleDeleteGrade}
                         onAssignTeacher={handleAssignTeacher}
                         userToken={userToken}

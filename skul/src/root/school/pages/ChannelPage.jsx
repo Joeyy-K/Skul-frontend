@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../../contexts/UserContext';
-import { SchoolContext } from '../context/schoolcontext';
 import AddChannel from '../forms/AddChannel';
 import { Link, Outlet } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -8,7 +7,6 @@ import { FiMessageSquare, FiTrash2 } from 'react-icons/fi';
 
 function ChannelPage() {
     const { user } = useContext(UserContext);
-    const { school } = useContext(SchoolContext);
     const [channels, setChannels] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);

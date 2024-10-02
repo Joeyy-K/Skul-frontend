@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import ProfileModal from './ProfileModal';
 import Avatar from '../../../components/shared/Avatars';
 
-const TeacherList = ({ teachers, grades, onUnassignTeacher, onDeleteTeacher }) => {
+const TeacherList = ({ teachers, onUnassignTeacher, onDeleteTeacher }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const itemsPerPage = 10;
@@ -23,8 +23,8 @@ const TeacherList = ({ teachers, grades, onUnassignTeacher, onDeleteTeacher }) =
     const teacherFields = [
         { label: 'Name', value: (teacher) => `${teacher.first_name} ${teacher.last_name}` },
         { label: 'Email', value: (teacher) => teacher.user?.email || 'N/A' },
-        { label: 'School', value: (teacher) => teacher.school?.full_name || 'Not Assigned' },
-        { label: 'Grade', value: (teacher) => teacher.grade?.name || 'Not Assigned' },
+        { label: 'School', value: (teacher) => teacher?.school_name || 'Not Assigned' },
+        { label: 'Grade', value: (teacher) => teacher?.grade_name || 'Not Assigned' },
     ];
 
     const handleRowClick = (teacher) => {
@@ -83,7 +83,7 @@ const TeacherList = ({ teachers, grades, onUnassignTeacher, onDeleteTeacher }) =
                                     {teacher.user.email}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    {teacher.grade ? grades.find(grade => grade.id === teacher.grade).name : 'No grade assigned'}
+                                    {teacher?.grade_name || 'No grade assigned'}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                     {teacher.user.channel ? teacher.user.channel : 'No channel assigned'}

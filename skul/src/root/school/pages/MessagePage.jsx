@@ -14,7 +14,6 @@ function MessagePage() {
     const [messages, setMessages] = useState([]);
     const userToken = Cookies.get('userToken');
     const { user } = useContext(UserContext);
-    const [users, setUsers] = useState([]);
     const [channelUsers, setChannelUsers] = useState([]);
     const [showAddUsers, setShowAddUsers] = useState(false);
     const [showChannelUsers, setShowChannelUsers] = useState(false);
