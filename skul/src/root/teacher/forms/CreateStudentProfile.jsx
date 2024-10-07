@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { TeacherContext } from '../contexts/teachercontext';
+import { useTeacherData } from '../contexts/useTeacherData';
 import Cookies from 'js-cookie';
 
 const CreateStudentProfile = ({ onAddStudent  }) => {
@@ -9,8 +9,9 @@ const CreateStudentProfile = ({ onAddStudent  }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [gradeId, setGradeId] = useState('');
-  const { teacher } = useContext(TeacherContext);
+  const { teacher, loading } = useTeacherData();
   const [schoolId, setSchoolId] = useState('');
+  
 
   let userToken = Cookies.get('userToken');
 
@@ -64,6 +65,12 @@ const CreateStudentProfile = ({ onAddStudent  }) => {
       console.error('Error:', error);
     }
   };
+
+  if (loading) {
+    (
+      <div>loading...</div>
+    );
+  }
 
   return (
     <div className="bg-gray-200 p-6 rounded-lg shadow-md dark:bg-gray-800">

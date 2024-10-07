@@ -91,7 +91,7 @@ const StudentPage = () => {
   return (
     <div className="bg-gray-100 dark:bg-gray-900 min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">Student Management</h1>
+        <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">Student In Your Grade</h1>
         
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden mb-8">
           <div className="p-6 flex justify-between items-center">

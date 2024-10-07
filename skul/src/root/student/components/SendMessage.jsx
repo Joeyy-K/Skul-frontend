@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { UserContext } from '../../../contexts/UserContext';
 import Cookies from 'js-cookie';
-import { toast } from 'react-toastify';
 
 function SendMessage({ channelId, onNewMessage }) {
     const { user } = useContext(UserContext);
@@ -28,7 +27,6 @@ function SendMessage({ channelId, onNewMessage }) {
         
         } catch (error) {
             console.error('Error sending message:', error);
-            toast.error('failed to send message', error)
         }
         }
     };

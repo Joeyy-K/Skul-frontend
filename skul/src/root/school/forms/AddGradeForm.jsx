@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import Cookies from 'js-cookie';
 import { UserContext } from '../../../contexts/UserContext';
+import { toast } from 'react-toastify';
 
 function AddGradeForm({ onAddGrade }) {
     const [gradeName, setGradeName] = useState('');
@@ -24,9 +25,11 @@ function AddGradeForm({ onAddGrade }) {
           .then(data => {
             onAddGrade(data);
             setGradeName('');
+            toast.success("Added grade successfully")
           })
           .catch(error => {
             console.error('Error:', error);
+            toast.error('Failed to add grade')
           });
       };
       

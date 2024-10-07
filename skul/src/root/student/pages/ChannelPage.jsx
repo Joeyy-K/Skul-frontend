@@ -36,7 +36,7 @@ function ChannelPage() {
                     <div key={index} className="bg-white dark:bg-gray-900 shadow rounded-lg p-4 mb-6">
                         <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">{channel.name}</h2>
                         <p className="text-gray-700 dark:text-gray-300">{channel.description}</p>
-                        <Link to={`/teacher-dashboard/messages/${channel.id}`} className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500 mt-2 inline-block">View Messages</Link>
+                        <Link to={`/student-dashboard/messages/${channel.id}`} className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-500 mt-2 inline-block">View Messages</Link>
                     </div>
                 ))
             )}

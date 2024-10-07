@@ -1,14 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../contexts/UserContext";
-import { TeacherContext } from "../contexts/teachercontext";
+import { useTeacherData } from "../contexts/useTeacherData";
 import Cookies from "js-cookie";
 
 function HomePage() {
     const { user } = useContext(UserContext);
-    const { teacher } = useContext(TeacherContext)
+    const { teacher, loading } = useTeacherData();
     console.log(user)
     console.log(teacher)
-    const [announcements, setAnnouncements] = useState([]);
     const [schedules, setSchedules] = useState([]);
     const [schoolData, setSchoolData] = useState(null);
     const userToken = Cookies.get('userToken');
@@ -66,6 +65,12 @@ function HomePage() {
                     <p className="text-gray-600 dark:text-gray-300">Unable to fetch user information.</p>
                 </div>
             </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div>loading...</div>
         );
     }
 

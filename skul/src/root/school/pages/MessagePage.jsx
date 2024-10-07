@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../../contexts/UserContext';
 import { useSchoolData } from '../context/useSchoolData';
+import ChannelUsersModal from '../components/ChannelUsersModal';
 import AddUsersToChannel from '../components/AddUsersToChannel';
 
 function MessagePage() {
@@ -110,23 +111,17 @@ function MessagePage() {
             </div>
             </div>
             {showAddUsers && (
-            <Modal show={showAddUsers} onClose={toggleAddUsers}>
-                <AddUsersToChannel />
-            </Modal>
+              <AddUsersToChannel
+                isOpen={showAddUsers}
+                onClose={toggleAddUsers}
+              />
             )}
             {showChannelUsers && (
-            <Modal show={showChannelUsers} onClose={toggleChannelUsers}>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Channel Users</h3>
-                <ul className="space-y-2">
-                {channelUsers.map((user) => (
-                    <li key={user.id} className="py-2 px-4 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white">
-                    {user.username}
-                    </li>
-                ))}
-                </ul>
-            </div>
-            </Modal>          
+              <ChannelUsersModal
+                isOpen={showChannelUsers}
+                onClose={toggleChannelUsers}
+                channelUsers={channelUsers}
+              />
             )}
             <div>
             {messages.map((message) => {

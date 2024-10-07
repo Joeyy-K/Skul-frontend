@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import ProfileModal from './ProfileModal';
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 import Avatar from '../../../components/shared/Avatars';
 
 const StudentList = ({ students, grades = [], onStudentUpdate }) => {

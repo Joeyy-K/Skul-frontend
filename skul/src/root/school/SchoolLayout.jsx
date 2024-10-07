@@ -21,7 +21,7 @@ function SchoolLayout() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/students" element={<StudentPage />} />
           <Route path="/teachers" element={<TeacherPage />} />
-          <Route path="/channel" element={<ChannelPage />} />
+          <Route path="/channels" element={<ChannelPage />} />
           <Route path="/messages/:channelId" element={<MessagePage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
         </Routes>

@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { FiPlus, FiSearch, FiFilter } from 'react-icons/fi';
 import AddGradeForm from '../forms/AddGradeForm';
 import GradeList from '../components/GradeList';
+import { toast } from 'react-toastify';
 
 function GradesPage() {
     const { school, loading } = useSchoolData();
@@ -47,26 +48,27 @@ function GradesPage() {
     };
 
     const handleDeleteGrade = (gradeId) => {
-      if (window.confirm('Are you sure you want to delete this grade? This action cannot be undone.')) {
-        fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/delete/`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Token ${userToken}`,
-          },
-        })
-          .then(response => {
-            if (response.ok) {
-              setGrades(grades.filter(grade => grade.id !== gradeId));
-              setSelectedGrade(null);
-            } else {
-              throw new Error('Failed to delete grade');
-            }
+        if (window.confirm('Are you sure you want to delete this grade? This action cannot be undone.')) {
+            fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/delete/`, {
+                method: 'DELETE',
+                headers: {
+                'Authorization': `Token ${userToken}`,
+                },
           })
-          .catch(error => {
-            console.error('Error:', error);
-          });
+            .then(response => {
+                if (response.ok) {
+                    setGrades(grades.filter(grade => grade.id !== gradeId));
+                    toast.success('Grade deleted successfully');
+                } else {
+                    throw new Error('Failed to delete grade');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error('Failed to delete grade');
+            });
         }
-      };
+    };
 
     const handleAddGrade = (newGrade) => {
         setGrades([...grades, newGrade]);
@@ -103,11 +105,14 @@ function GradesPage() {
                             : grade
                     )
                 );
+                toast.success('Teacher added successfully')
             } else {
                 console.error('Failed to assign teacher');
+                toast.error('failed to assign teacher')
             }
         } catch (error) {
             console.error('Error assigning teacher:', error);
+            toast.error('Error assigning teacher:', error);
         }
     };
 
@@ -170,7 +175,7 @@ function GradesPage() {
                         </div>
                     </div>
                     <GradeList
-                        grades={grades}
+                        grades={filteredGrades}
                         onDeleteGrade={handleDeleteGrade}
                         onAssignTeacher={handleAssignTeacher}
                         userToken={userToken}

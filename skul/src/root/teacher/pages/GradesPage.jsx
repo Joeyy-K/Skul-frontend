@@ -79,7 +79,9 @@ function GradesPage() {
     }, [students, searchTerm, sortBy, sortOrder]);
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+        return (
+            <div className="flex justify-center items-center h-screen">Loading...</div>
+        );
     }
 
     return (
@@ -163,6 +165,7 @@ function GradesPage() {
                                 </div>
                             </div>
                             <StudentList
+                                grades={grades}
                                 students={filteredStudents}
                                 selectedGrade={selectedGrade}
                                 onStudentUpdate={handleStudentUpdate}

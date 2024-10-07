@@ -5,38 +5,39 @@ import { Link, useLocation } from 'react-router-dom';
 import { logout } from '../../../components/cookie/logout';
 
 function Navbar({ isOpen, setIsOpen }) {
-  const { setUser } = useContext(UserContext);
-  const { setIsAuthenticated } = useContext(AuthContext);
-  const navbarRef = useRef(null);
-  const location = useLocation();
+    const { setUser } = useContext(UserContext);
+    const { setIsAuthenticated } = useContext(AuthContext);
+    const navbarRef = useRef(null);
+    const location = useLocation();
 
-  async function handleLogout() {
-    const response = await logout();
-    if (response && response.ok) {
-      setIsAuthenticated(false);
-      console.log('Logout successful');
-      setUser(null);
-    } else {
-      console.error('Logout failed');
-    }
-  }
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isOpen && !navbarRef.current.contains(event.target)) {
-        setIsOpen(false);
+    async function handleLogout() {
+      const response = await logout();
+      if (response && response.ok) {
+        setIsAuthenticated(false);
+        console.log('Logout successful');
+        setUser(null);
+      } else {
+        console.error('Logout failed');
       }
-    };
+    }
 
-    document.addEventListener('click', handleClickOutside, true);
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-    };
-  }, [isOpen, setIsOpen]);
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (isOpen && !navbarRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+
+      document.addEventListener('click', handleClickOutside, true);
+      return () => {
+        document.removeEventListener('click', handleClickOutside, true);
+      };
+    }, [isOpen, setIsOpen]);
 
   const navItems = [
     { path: '/student-dashboard/', label: 'Home', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
-    { path: '/student-dashboard/assignment', label: 'Assignment', icon: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' },
+    { path: '/student-dashboard/assignments', label: 'Assignments', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' },
+    { path: '/student-dashboard/channels', label: 'Channels', icon: 'M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4' },
   ];
 
   return (
@@ -102,3 +103,4 @@ function Navbar({ isOpen, setIsOpen }) {
 }
 
 export default Navbar;
+

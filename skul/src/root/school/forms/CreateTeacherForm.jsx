@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { SchoolContext } from '../context/schoolcontext';
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 const CreateTeacherForm = ({ onAddTeacher }) => {
   const [firstName, setFirstName] = useState('');
@@ -23,6 +24,7 @@ const CreateTeacherForm = ({ onAddTeacher }) => {
     e.preventDefault();
 
     if (!firstName || !lastName || !username || !password || !email || !schoolId) {
+      toast.error('Please fill in all required fields.');
       console.error('Please fill in all required fields.');
       return;
     }
@@ -45,6 +47,7 @@ const CreateTeacherForm = ({ onAddTeacher }) => {
       });
 
       if (response.ok) {
+        toast.success('Teacher added successfully');
         const data = await response.json();
         onAddTeacher(data);
         setFirstName('');
@@ -56,6 +59,7 @@ const CreateTeacherForm = ({ onAddTeacher }) => {
         console.error('Failed to create teacher profile');
       }
     } catch (error) {
+      toast.error('Failed to create teahcer', error);
       console.error('Error:', error);
     }
   };

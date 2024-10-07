@@ -1,13 +1,12 @@
-import React, { useState, useContext } from 'react'
-import { TeacherContext } from '../contexts/teachercontext'
+import React, { useState  } from 'react'
+import { useTeacherData } from '../contexts/useTeacherData'
 import Cookies from 'js-cookie'
 
 const AnnouncementForm = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [selectedFile, setSelectedFile] = useState(null);
-  const { teacher } = useContext(TeacherContext);
-
+  const { teacher, loading } = useTeacherData();
   let userToken = Cookies.get('userToken');
 
   const handleFileChange = (event) => { 
@@ -42,6 +41,12 @@ const AnnouncementForm = () => {
     .catch((error) => {
       console.error('Error:', error)
     })
+  }
+
+  if (loading) {
+    return (
+      <div>loading...</div>
+    );
   }
 
   return (

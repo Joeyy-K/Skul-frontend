@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { StudentContext } from '../context/studentcontext';
+import { useStudentData } from '../context/useStudentData';
 
 const AssignmentPage = () => {
-    const { student } = useContext(StudentContext)
+    const { student, loading } = useStudentData();
     const userToken = Cookies.get('userToken');
     const [assignments, setAssignments] = useState([]);
     const [selectedAssignment, setSelectedAssignment] = useState(null);
@@ -76,6 +76,12 @@ const AssignmentPage = () => {
         alert('An error occurred while submitting the assignment.');
         }
     };
+
+    if (loading) {
+        return (
+            <div>loading...</div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-8 bg-gray-100 dark:bg-gray-800 min-h-screen">

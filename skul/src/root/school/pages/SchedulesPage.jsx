@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import { UserContext } from '../../../contexts/UserContext';
+import { toast } from 'react-toastify';
 
 function SchedulesPage() {
     const [schedules, setSchedules] = useState([]);
@@ -9,6 +10,7 @@ function SchedulesPage() {
     const [errors, setErrors] = useState({});
     const userToken = Cookies.get('userToken');
     const { user } = useContext(UserContext);
+    console.log(user)
 
     useEffect(() => {
         fetchSchedules();
@@ -44,7 +46,7 @@ function SchedulesPage() {
             formData.append('file', newSchedule.file);
         }
         formData.append('creator', user.user.id);
-        formData.append('school', user.school);
+        formData.append('school', user.id);
 
         try {
             const response = await fetch('http://127.0.0.1:8000/school/schedules/', {
@@ -57,12 +59,15 @@ function SchedulesPage() {
                 setNewSchedule({ title: '', description: '', file: null });
                 setIsCreating(false);
                 setErrors({});
+                toast.success('Schedule created successfully!');
             } else {
                 const errorData = await response.json();
                 setErrors(errorData);
+                toast.error('Failed to create schedule. Please check the form and try again.');
             }
         } catch (error) {
             console.error('Error creating schedule:', error);
+            toast.error(error);
         }
     };
 

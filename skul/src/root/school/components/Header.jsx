@@ -3,6 +3,7 @@ import { UserContext } from '../../../contexts/UserContext';
 import { AuthContext } from '../../../contexts/AuthContext'
 import { logout } from '../../../components/cookie/logout';
 import Avatar from '../../../components/shared/Avatars';
+import { toast } from 'react-toastify';
 
 function Header({ handleSidebar }) {
     const { user } = useContext(UserContext);
@@ -17,9 +18,11 @@ function Header({ handleSidebar }) {
       if (response && response.ok) {
         setIsAuthenticated(false);
         console.log('Logout successful');
+        toast.success('Logout Successful')
         setUser(null);
       } else {
         console.error('Logout failed');
+        toast.error('Logout failed');
       }
     } 
 

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { UserContext } from '../../../contexts/UserContext';
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 function AddChannel() {
   const { user } = useContext(UserContext);
@@ -35,6 +36,7 @@ function AddChannel() {
 
       const data = await response.json();
       if (response.ok) {
+        toast.success('Channel added successfully')
         setChannelName('');
         setChannelDescription('');
         setChannelType('class');
@@ -54,6 +56,7 @@ function AddChannel() {
       setSuccess('Channel created successfully!');
     } catch (error) {
       console.error('Error creating channel:', error);
+      toast.error("failed to addd channel")
       setError(error.message);
     } finally {
       setIsLoading(false);

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import { getCookie } from '../../components/cookie/utils';
-import Darkmode from '../../components/UI/Darkmode';
+import Darkmode from '../../components/ui/Darkmode';
 import Cookies from 'js-cookie';
 
 const SignIn = () => {

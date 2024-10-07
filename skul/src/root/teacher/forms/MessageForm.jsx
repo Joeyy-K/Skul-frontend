@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react'
-import { TeacherContext } from '../contexts/teachercontext'
+import { useTeacherData } from '../contexts/useTeacherData'
 
 const MessageForm = () => {
-  const [content, setContent] = useState('')
-  const { teacher } = useContext(TeacherContext)
+  const [content, setContent] = useState('');
+  const { teacher, loading } = useTeacherData();
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -27,6 +27,12 @@ const MessageForm = () => {
     .catch((error) => {
       console.error('Error:', error)
     })
+  }
+
+  if (loading) {
+    return (
+      <div>loading...</div>
+    )
   }
 
   return (

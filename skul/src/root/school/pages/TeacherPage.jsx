@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSchoolData } from '../context/useSchoolData';
 import Cookies from 'js-cookie';
-import { FiPlus, FiSearch, FiFilter, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+import { FiPlus, FiSearch, FiFilter } from 'react-icons/fi';
 import CreateTeacherForm from '../forms/CreateTeacherForm';
 import TeacherList from '../components/TeacherList';
 

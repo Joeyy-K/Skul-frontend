@@ -4,11 +4,11 @@ import SendMessage from '../components/SendMessage';
 import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../../contexts/UserContext';
-import { useTeacherData } from '../contexts/useTeacherData';
+import { useStudentData } from "../context/useStudentData";
 
 function MessagePage() {
-    const { teacher, loading } = useTeacherData();
-    console.log(teacher)
+    const { student, loading } = useStudentData();
+    console.log(student)
     const { channelId } = useParams();
     const [messages, setMessages] = useState([]);
     const userToken = Cookies.get('userToken');
@@ -113,7 +113,7 @@ function MessagePage() {
             console.log("Processing message:", message);
             const sender = channelUsers.find((user) => user.id === message.sender);
             console.log("Found sender:", sender);
-            const username = sender ? sender.username : teacher.school_name;
+            const username = sender ? sender.username : student?.school_name;
             
             return (
                 <div key={message.id} className={`mb-2 ${message.sender === (user?.user?.id ?? null) ? 'text-right' : ''}`}>

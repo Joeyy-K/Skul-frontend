@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useTeacherData } from '../contexts/useTeacherData';
 import { TeacherContext } from '../contexts/teachercontext';
+import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import AssignmentSubmissionStatus from '../components/AssignmentSubmissionStatus';
 import SubmittedAssignments from '../components/SubmittedAssignments';
@@ -7,7 +9,6 @@ import SubmittedAssignments from '../components/SubmittedAssignments';
 function Assignment({ assignment, onDelete }) {
   const [showSubmissionStatus, setShowSubmissionStatus] = useState(false);
   const [showSubmittedAssignments, setShowSubmittedAssignments] = useState(false);
-  const { teacher } = useContext(TeacherContext);
 
   const handleDelete = () => {
     fetch(`http://127.0.0.1:8000/school/assignments/${assignment.id}/`, {
@@ -16,13 +17,23 @@ function Assignment({ assignment, onDelete }) {
         'Authorization': `Token ${Cookies.get('userToken')}`
       }
     })
-    .then(() => onDelete(assignment.id));
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to delete assignment');
+      }
+      onDelete(assignment.id);
+      toast.success('Assignment deleted successfully');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      toast.error('Failed to delete assignment');
+    });
   };
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-6">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{assignment.title}</h3>
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{assignment.grade_name}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Grade: {assignment.grade}</p>
       <p className="text-gray-700 dark:text-gray-300 mb-4">{assignment.description}</p>
       <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
         Due: {new Date(assignment.due_date).toLocaleString()}
@@ -49,17 +60,17 @@ function Assignment({ assignment, onDelete }) {
         >
           {showSubmissionStatus ? 'Hide' : 'Show'} Submission Status
         </button>
-        {teacher && (
-          <button 
-            onClick={() => setShowSubmittedAssignments(!showSubmittedAssignments)}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-          >
-            {showSubmittedAssignments ? 'Hide' : 'View'} Submitted Assignments
-          </button>
-        )}
+        <button 
+          onClick={() => setShowSubmittedAssignments(!showSubmittedAssignments)}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+        >
+          {showSubmittedAssignments ? 'Hide' : 'View'} Submitted Assignments
+        </button>
       </div>
       {showSubmissionStatus && <AssignmentSubmissionStatus assignmentId={assignment.id} />}
-      {showSubmittedAssignments && teacher && <SubmittedAssignments assignmentId={assignment.id} />}
+      {showSubmittedAssignments && (
+        <SubmittedAssignments assignmentId={assignment.id} />
+      )}
     </div>
   );
 }
@@ -201,7 +212,7 @@ function AssignmentForm({ onCreate, grades }) {
 function AssignmentPage() {
   const [assignments, setAssignments] = useState([]);
   const [grades, setGrades] = useState([]);
-  const { teacher } = useContext(TeacherContext);
+  const { teacher, loading } = useTeacherData();
   const userToken = Cookies.get('userToken');
   const [showCreateForm, setShowCreateForm] = useState(false);
 
@@ -233,6 +244,12 @@ function AssignmentPage() {
     setAssignments(prevAssignments => [...prevAssignments, newAssignment]);
     setShowCreateForm(false);
   };
+
+  if (loading) {
+    return (
+      <div>loading...</div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-4 bg-gray-100 dark:bg-gray-900">

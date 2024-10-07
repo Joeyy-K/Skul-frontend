@@ -70,6 +70,26 @@ const GradeList = ({
         setSelectedGrade(null);
     };
 
+    const refreshGrades = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/school/grades/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Token ${userToken}`,
+                },
+            });
+            if (response.ok) {
+                const updatedGrades = await response.json();
+                setGrades(updatedGrades);
+            } else {
+                toast.error('Failed to refresh grades data');
+            }
+        } catch (error) {
+            console.error('Error refreshing grades:', error);
+            toast.error('An error occurred while refreshing grades data');
+        }
+    };
+    
     const handleAddStudent = async (studentIds) => {
         try {
             const studentIdsArray = Array.isArray(studentIds) ? studentIds : [studentIds];
@@ -84,19 +104,29 @@ const GradeList = ({
                     body: JSON.stringify({ student_id: studentId }),
                 })
             );
-
-            const results = await Promise.all(promises);
-
-            if (results.every(response => response.ok)) {
-                toast.success('Students successfully added to grade');
+            
+            const responses = await Promise.all(promises);
+            
+            const results = await Promise.all(responses.map(response => response.json()));
+            
+            const successfulAdditions = results.filter(result => !result.message);
+            const failedAdditions = results.filter(result => result.message);
+            
+            if (successfulAdditions.length > 0) {
+                toast.success(`${successfulAdditions.length} student(s) successfully added to grade`);
+            }
+            
+            failedAdditions.forEach(result => {
+                toast.error(result.message);
+            });
+            
+            if (responses.every(response => response.ok)) {
                 handleCloseAddStudentModal();
-                // You might want to implement a function to refresh the grades data here
-            } else {
-                toast.error('Failed to add one or more students to grade');
+                await refreshGrades();
             }
         } catch (error) {
             console.error('Error adding students to grade:', error);
-            toast.error('An error occurred while adding students');
+            toast.error('An unexpected error occurred while adding students to grade');
         }
     };
 

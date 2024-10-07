@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 function AddStudentForm({ gradeId }) {
     const [studentId, setStudentId] = useState('');
@@ -18,12 +19,14 @@ function AddStudentForm({ gradeId }) {
       })
         .then(response => {
           if (response.ok) {
+            toast.success('Added students')
             setStudentId('');
           } else {
             throw new Error('Response not OK');
           }
         })
         .catch(error => {
+          toast.error(error)
           console.error('Error:', error);
         });
     };
