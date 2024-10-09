@@ -5,13 +5,14 @@ import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import AssignmentSubmissionStatus from '../components/AssignmentSubmissionStatus';
 import SubmittedAssignments from '../components/SubmittedAssignments';
+import { API_URL } from '../../../components/url/url';
 
 function Assignment({ assignment, onDelete }) {
   const [showSubmissionStatus, setShowSubmissionStatus] = useState(false);
   const [showSubmittedAssignments, setShowSubmittedAssignments] = useState(false);
 
   const handleDelete = () => {
-    fetch(`http://127.0.0.1:8000/school/assignments/${assignment.id}/`, {
+    fetch(`${API_URL}/school/assignments/${assignment.id}/`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Token ${Cookies.get('userToken')}`
@@ -77,6 +78,7 @@ function Assignment({ assignment, onDelete }) {
 
 function AssignmentForm({ onCreate, grades }) {
   const { teacher } = useContext(TeacherContext);
+  console.log(teacher)
   const [newAssignment, setNewAssignment] = useState({
     title: '',
     description: '',
@@ -101,7 +103,7 @@ function AssignmentForm({ onCreate, grades }) {
       formData.append(key, newAssignment[key]);
     });
 
-    fetch('http://127.0.0.1:8000/school/assignments/', {
+    fetch(`${API_URL}/school/assignments/`, {
       method: 'POST',
       headers: {
         'Authorization': `Token ${Cookies.get('userToken')}`
@@ -110,6 +112,7 @@ function AssignmentForm({ onCreate, grades }) {
     })
     .then(response => response.json())
     .then(data => {
+      toast.success('assignment created')
       onCreate(data);
       setNewAssignment({
         title: '',
@@ -121,6 +124,7 @@ function AssignmentForm({ onCreate, grades }) {
       });
     })
     .catch(error => alert(`Error: ${JSON.stringify(error)}`));
+    toast.error("there was an error,try again later")
   };
 
   return (
@@ -217,7 +221,7 @@ function AssignmentPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/school/assignments/', {
+    fetch(`${API_URL}/school/assignments/`, {
       headers: {
         'Authorization': `Token ${userToken}`
       }
@@ -226,7 +230,7 @@ function AssignmentPage() {
     .then(data => setAssignments(data));
 
     if (teacher && teacher.school) {
-      fetch(`http://127.0.0.1:8000/school/grades/?school_id=${teacher.school}`, {
+      fetch(`${API_URL}/school/grades/?school_id=${teacher.school}`, {
         headers: {
           'Authorization': `Token ${userToken}`
         }

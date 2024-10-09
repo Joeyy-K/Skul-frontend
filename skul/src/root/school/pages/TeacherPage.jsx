@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { FiPlus, FiSearch, FiFilter } from 'react-icons/fi';
 import CreateTeacherForm from '../forms/CreateTeacherForm';
 import TeacherList from '../components/TeacherList';
+import { API_URL } from '../../../components/url/url';
 
 function TeacherPage() {
     const { school, loading } = useSchoolData();
@@ -23,7 +24,7 @@ function TeacherPage() {
 
     const fetchTeachers = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/teachers/?school_id=${school.id}`, {
+            const response = await fetch(`${API_URL}/school/teachers/?school_id=${school.id}`, {
                 headers: { 'Authorization': `Token ${userToken}` },
             });
             const data = await response.json();
@@ -39,7 +40,7 @@ function TeacherPage() {
     };
 
     const handleUnassignTeacher = (teacherId) => {
-        fetch(`http://127.0.0.1:8000/school/unassign-teacher/${teacherId}/`, {
+        fetch(`${API_URL}/school/unassign-teacher/${teacherId}/`, {
             method: 'POST',
             headers: {
             'Authorization': `Token ${userToken}`,
@@ -58,7 +59,7 @@ function TeacherPage() {
 
     const handleDeleteTeacher = (teacherId) => {
         if (window.confirm('Are you sure you want to delete this teacher?')) {
-            fetch(`http://127.0.0.1:8000/school/delete-teacher/${teacherId}/`, {
+            fetch(`${API_URL}/school/delete-teacher/${teacherId}/`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Token ${userToken}`,

@@ -1,8 +1,9 @@
 import Cookies from 'js-cookie';
+import { API_URL } from '../url/url';
 
 export const logout = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:8000/schoolauth/user/logout/', {
+    const response = await fetch(`${API_URL}/schoolauth/user/logout/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

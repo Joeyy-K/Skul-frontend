@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
+import { API_URL } from '../../../components/url/url';
 
 function RemoveStudentForm({ gradeId }) {
   const [studentId, setStudentId] = useState('');
@@ -7,7 +8,7 @@ function RemoveStudentForm({ gradeId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/remove-student/`, {
+    fetch(`${API_URL}/school/grades/${gradeId}/remove-student/`, {
       method: 'POST',
       headers: {
         'Authorization': `Token ${userToken}`,

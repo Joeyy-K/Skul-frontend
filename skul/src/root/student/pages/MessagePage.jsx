@@ -3,35 +3,32 @@ import Modal from '../components/Modal';
 import SendMessage from '../components/SendMessage';
 import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
+import ChannelUsersModal from '../components/ChannelUsersModal';
 import { UserContext } from '../../../contexts/UserContext';
 import { useStudentData } from "../context/useStudentData";
+import { API_URL } from '../../../components/url/url';
 
 function MessagePage() {
     const { student, loading } = useStudentData();
-    console.log(student)
     const { channelId } = useParams();
     const [messages, setMessages] = useState([]);
     const userToken = Cookies.get('userToken');
     const { user } = useContext(UserContext);
     const [channelUsers, setChannelUsers] = useState([]);
     const [showChannelUsers, setShowChannelUsers] = useState(false);
-    console.log("Rendering MessagePage. Channel Users:", channelUsers);
-    console.log("Current user:", user);
-    console.log("Current channelId:", channelId);
     const handleNewMessage = (newMessage) => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
     };
 
     const fetchMessages = async (channelId) => {
         try {
-        const response = await fetch(`http://127.0.0.1:8000/school/channels/${channelId}/messages/`, {
+        const response = await fetch(`${API_URL}/school/channels/${channelId}/messages/`, {
             headers: {
             'Authorization': `Token ${userToken}`,
             },
         });
         const data = await response.json();
         setMessages(data);
-        console.log(data);
         } catch (error) {
         console.error('Error fetching messages:', error);
         }
@@ -39,7 +36,6 @@ function MessagePage() {
 
     useEffect(() => {
         if (channelId) {
-          console.log("Fetching data for channel:", channelId);
           fetchMessages(channelId);
           fetchChannelUsers(channelId);
         } else {
@@ -49,21 +45,16 @@ function MessagePage() {
       
     const toggleChannelUsers = () => {
         setShowChannelUsers((prevShowChannelUsers) => !prevShowChannelUsers);
-        if (showAddUsers) {
-          setShowAddUsers(false);
-        }
     };
 
     const fetchChannelUsers = async (channelId) => {
         try {
-          console.log("Fetching users for channel:", channelId);
-          const response = await fetch(`http://127.0.0.1:8000/school/channels/${channelId}/users/`, {
+          const response = await fetch(`${API_URL}/school/channels/${channelId}/users/`, {
             headers: {
               'Authorization': `Token ${userToken}`,
             },
           });
           const data = await response.json();
-          console.log("Fetched channel users data:", data);
           setChannelUsers(data);
         } catch (error) {
           console.error('Error fetching channel users:', error);
@@ -95,24 +86,15 @@ function MessagePage() {
             </div>
             </div>
             {showChannelUsers && (
-            <Modal show={showChannelUsers} onClose={toggleChannelUsers}>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Channel Users</h3>
-                <ul className="space-y-2">
-                {channelUsers.map((user) => (
-                    <li key={user.id} className="py-2 px-4 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white">
-                    {user.username}
-                    </li>
-                ))}
-                </ul>
-            </div>
-            </Modal>          
+              <ChannelUsersModal
+                isOpen={showChannelUsers}
+                onClose={toggleChannelUsers}
+                channelUsers={channelUsers}
+              />           
             )}
             <div>
             {messages.map((message) => {
-            console.log("Processing message:", message);
             const sender = channelUsers.find((user) => user.id === message.sender);
-            console.log("Found sender:", sender);
             const username = sender ? sender.username : student?.school_name;
             
             return (

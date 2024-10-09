@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { UserContext } from '../../../contexts/UserContext';
 import Cookies from 'js-cookie';
+import { API_URL } from '../../../components/url/url';
 
 function SendMessage({ channelId, onNewMessage }) {
     const { user } = useContext(UserContext);
@@ -10,7 +11,7 @@ function SendMessage({ channelId, onNewMessage }) {
     const handleSendMessage = async () => {
         if (channelId && user) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/channels/${channelId}/messages/create/`, {
+            const response = await fetch(`${API_URL}/school/channels/${channelId}/messages/create/`, {
             method: 'POST',
             headers: {
                 'Authorization': `Token ${userToken}`,

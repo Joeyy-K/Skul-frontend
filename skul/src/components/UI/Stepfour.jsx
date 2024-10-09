@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '../url/url';
 
 function Stepfour({ schoolId, setSchoolId, error }) {
   const [schools, setSchools] = useState([]);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/school/schools/')
+    fetch(`${API_URL}/school/schools/`)
       .then(response => response.json())
       .then(data => {
         console.log(data);

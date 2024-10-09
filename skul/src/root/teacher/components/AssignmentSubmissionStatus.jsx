@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { API_URL } from '../../../components/url/url';
 
 const AssignmentSubmissionStatus = ({ assignmentId }) => {
   const [submissionStatus, setSubmissionStatus] = useState(null);
@@ -7,7 +8,7 @@ const AssignmentSubmissionStatus = ({ assignmentId }) => {
   useEffect(() => {
     const fetchSubmissionStatus = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/school/assignments/${assignmentId}/submission-status/`, {
+        const response = await fetch(`${API_URL}/school/assignments/${assignmentId}/submission-status/`, {
           headers: {
             'Authorization': `Token ${Cookies.get('userToken')}`
           }

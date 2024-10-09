@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import Avatar from '../../../components/shared/Avatars';
 import { FiLoader, FiUserPlus, FiSearch } from 'react-icons/fi';
 import ProfileModal from '../components/ProfileModal';
+import { API_URL } from '../../../components/url/url';
 
 const StudentPage = () => {
   const [students, setStudents] = useState([]);
@@ -18,7 +19,7 @@ const StudentPage = () => {
     const fetchStudents = async () => {
       if (teacher && teacher.grade) {
         try {
-          const response = await fetch(`http://127.0.0.1:8000/school/grades/${teacher.grade}/students/`, {
+          const response = await fetch(`${API_URL}/school/grades/${teacher.grade}/students/`, {
             headers: {
               'Authorization': `Token ${userToken}`,
             },

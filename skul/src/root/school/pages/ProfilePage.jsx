@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Cookies from "js-cookie";
-import { UserContext } from "../../../contexts/UserContext";
 import Avatar from '../../../components/shared/Avatars';
+import { API_URL } from '../../../components/url/url';
+import { toast } from 'react-toastify';
 
 function ProfilePage() {
-  const { user } = useContext(UserContext);
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  console.log(profileData)
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchProfileData();
@@ -16,7 +16,7 @@ function ProfilePage() {
   const fetchProfileData = async () => {
     const userToken = Cookies.get('userToken');
     try {
-      const response = await fetch('http://127.0.0.1:8000/school/profile/', {
+      const response = await fetch(`${API_URL}/school/profile/`, {
         headers: {
           'Authorization': `Token ${userToken}`,
         },
@@ -33,6 +33,10 @@ function ProfilePage() {
     setProfileData(prevData => ({
       ...prevData,
       [name]: value,
+      school_info: {
+        ...prevData.school_info,
+        [name]: value,
+      }
     }));
   };
 
@@ -40,19 +44,36 @@ function ProfilePage() {
     e.preventDefault();
     const userToken = Cookies.get('userToken');
     try {
-      const response = await fetch('http://127.0.0.1:8000/school/profile/', {
+      const formData = new FormData();
+      for (const key in profileData) {
+        if (key !== 'avatar' && key !== 'teacher_info' && key !== 'school_info' && key !== 'student_info') {
+          formData.append(key, profileData[key]);
+        }
+      }
+      for (const key in profileData.school_info) {
+        formData.append(`school_info.${key}`, profileData.school_info[key]);
+      }
+
+      const response = await fetch(`${API_URL}/school/profile/`, {
         method: 'PUT',
         headers: {
           'Authorization': `Token ${userToken}`,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(profileData),
+        body: formData,
       });
       const updatedData = await response.json();
-      setProfileData(updatedData);
-      setIsEditing(false);
+      if (response.ok) {
+        toast.success('Updated Profile')
+        setProfileData(updatedData);
+        setIsEditing(false);
+        setError(null);
+      } else {
+        setError(updatedData);
+      }
     } catch (error) {
       console.error('Error updating profile:', error);
+      toast.error('Error updating profile:', error);
+      setError('Failed to update profile');
     }
   };
 
@@ -65,7 +86,7 @@ function ProfilePage() {
       <div className="p-6 rounded-lg shadow-xl w-80">
         <div className="flex items-center space-x-4 mb-6">
         <Avatar 
-          avatarUrl={user.user?.avatar_url} 
+          avatarUrl={profileData.avatar} 
           name={`profileData.school_info.full_name`} 
           size={32} 
           className="w-16 h-16 rounded-full"
@@ -79,41 +100,11 @@ function ProfilePage() {
         {isEditing ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 dark:text-gray-400">School Name</label>
-              <input
-                type="text"
-                name="full_name"
-                value={profileData.school_info.full_name}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-            </div>
-            <div>
               <label className="block text-sm font-medium text-gray-300 dark:text-gray-400">School Username</label>
               <input
                 type="text"
                 name="username"
                 value={profileData.username}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 dark:text-gray-400">Location</label>
-              <input
-                type="text"
-                name="location"
-                value={profileData.school_info.location}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 dark:text-gray-400">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={profileData.email}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
@@ -130,7 +121,7 @@ function ProfilePage() {
               <p className="text-white">{profileData.school_info.full_name}</p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-gray-300 dark:text-gray-400">School Username</h3>
+              <h3 className="text-sm font-medium text-gray-300 dark:text-gray-400">Username</h3>
               <p className="text-white">{profileData.username}</p>
             </div>
             <div>

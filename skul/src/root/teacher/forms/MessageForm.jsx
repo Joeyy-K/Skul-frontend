@@ -1,5 +1,6 @@
-import React, { useState, useContext } from 'react'
-import { useTeacherData } from '../contexts/useTeacherData'
+import React, { useState, useContext } from 'react';
+import { useTeacherData } from '../contexts/useTeacherData';
+import { API_URL } from '../../../components/url/url';
 
 const MessageForm = () => {
   const [content, setContent] = useState('');
@@ -12,7 +13,7 @@ const MessageForm = () => {
       channel: teacher.user.channel,
       content: content,
     }
-    fetch('http://127.0.0.1:8000/school/messages/', {
+    fetch(`${API_URL}/school/messages/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

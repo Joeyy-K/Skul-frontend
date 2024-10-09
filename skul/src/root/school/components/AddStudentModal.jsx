@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiX, FiSearch } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import { API_URL } from '../../../components/url/url';
 
 const AddStudentModal = ({ gradeId, schoolId, onAddStudent, userToken, onClose }) => {
     const [students, setStudents] = useState([]);
@@ -10,7 +11,7 @@ const AddStudentModal = ({ gradeId, schoolId, onAddStudent, userToken, onClose }
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/school/students/?school_id=${schoolId}`, {
+                const response = await fetch(`${API_URL}/school/students/?school_id=${schoolId}`, {
                     headers: { 'Authorization': `Token ${userToken}` },
                 });
                 const data = await response.json();

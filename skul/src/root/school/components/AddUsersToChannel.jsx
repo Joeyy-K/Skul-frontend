@@ -3,12 +3,7 @@ import { UserContext } from '../../../contexts/UserContext';
 import { SchoolContext } from '../context/schoolcontext';
 import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
-import { X, Search } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Checkbox } from '@/components/ui/checkbox';
+import { API_URL } from '../../../components/url/url';
 
 const AddUsersToChannel = ({ isOpen, onClose }) => {
   const { channelId } = useParams();
@@ -27,7 +22,7 @@ const AddUsersToChannel = ({ isOpen, onClose }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/school/school/${school.id}/users/`, {
+      const response = await fetch(`${API_URL}/school/school/${school.id}/users/`, {
         headers: {
           'Authorization': `Token ${userToken}`,
         },
@@ -50,7 +45,7 @@ const AddUsersToChannel = ({ isOpen, onClose }) => {
   const handleAddUsersToChannel = async () => {
     try {
       const promises = selectedUsers.map((userId) =>
-        fetch(`http://127.0.0.1:8000/school/channels/${channelId}/add_user/${userId}/`, {
+        fetch(`${API_URL}/school/channels/${channelId}/add_user/${userId}/`, {
           method: 'POST',
           headers: {
             'Authorization': `Token ${userToken}`,
@@ -58,7 +53,6 @@ const AddUsersToChannel = ({ isOpen, onClose }) => {
           },
         })
       );
-
       await Promise.all(promises);
       setSelectedUsers([]);
       onClose();
@@ -73,51 +67,59 @@ const AddUsersToChannel = ({ isOpen, onClose }) => {
       user.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Users to Channel</DialogTitle>
-        </DialogHeader>
-        <div className="py-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Add Users to Channel</h2>
           <div className="mb-4 relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-            <Input
+            <input
               type="text"
               placeholder="Search users..."
-              className="pl-8"
+              className="w-full px-4 py-2 border rounded-md text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <ScrollArea className="h-[300px] pr-4">
+          <div className="h-64 overflow-y-auto mb-4">
             {filteredUsers.map((user) => (
               <div key={user.id} className="flex items-center space-x-2 mb-2">
-                <Checkbox
+                <input
+                  type="checkbox"
                   id={`user-${user.id}`}
                   checked={selectedUsers.includes(user.id)}
-                  onCheckedChange={() => handleUserSelect(user.id)}
+                  onChange={() => handleUserSelect(user.id)}
+                  className="rounded text-blue-500 focus:ring-blue-500 dark:bg-gray-700"
                 />
                 <label
                   htmlFor={`user-${user.id}`}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
                   {user.username}
                 </label>
               </div>
             ))}
-          </ScrollArea>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAddUsersToChannel}
+              disabled={selectedUsers.length === 0}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700"
+            >
+              Add Users
+            </button>
+          </div>
         </div>
-        <div className="flex justify-end space-x-2">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={handleAddUsersToChannel} disabled={selectedUsers.length === 0}>
-            Add Users
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 

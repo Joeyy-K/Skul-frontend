@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import { UserContext } from '../../../contexts/UserContext';
 import { toast } from 'react-toastify';
+import { API_URL } from '../../../components/url/url';
 
 function SchedulesPage() {
     const [schedules, setSchedules] = useState([]);
@@ -18,7 +19,7 @@ function SchedulesPage() {
 
     const fetchSchedules = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/school/schedules/', {
+            const response = await fetch(`${API_URL}/school/schedules/`, {
                 headers: { 'Authorization': `Token ${userToken}` },
             });
             const data = await response.json();
@@ -49,7 +50,7 @@ function SchedulesPage() {
         formData.append('school', user.id);
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/school/schedules/', {
+            const response = await fetch(`${API_URL}/school/schedules/`, {
                 method: 'POST',
                 headers: { 'Authorization': `Token ${userToken}` },
                 body: formData,

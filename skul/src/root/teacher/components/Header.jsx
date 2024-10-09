@@ -101,7 +101,11 @@ function Header({ handleSidebar }) {
       <div className="bg-white dark:bg-black shadow w-screen border-b border-gray-500 dark:border-gray-700">
         <div className="mx-auto">
           <div className="flex justify-between items-center py-4 px-4">
-            <h1 className="text-xl font-semibold text-black dark:text-white">Skul</h1>
+            <a href="/" className="no-underline">
+              <h1 className="text-xl font-semibold text-black dark:text-white">
+                Skul
+              </h1>
+            </a>
             <div className="flex items-center">
               <div className="relative" ref={dropdownRef}>
                 <button

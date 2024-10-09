@@ -5,6 +5,7 @@ import AddStudentModal from './AddStudentModal';
 import { FiChevronLeft, FiChevronRight, FiTrash2, FiUserPlus, FiUserCheck } from 'react-icons/fi';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import { API_URL } from '../../../components/url/url';
 
 const GradeList = ({
     grades,
@@ -72,7 +73,7 @@ const GradeList = ({
 
     const refreshGrades = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/school/grades/', {
+            const response = await fetch(`${API_URL}/school/grades/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Token ${userToken}`,

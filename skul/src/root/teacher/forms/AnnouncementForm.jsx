@@ -1,6 +1,7 @@
 import React, { useState  } from 'react'
 import { useTeacherData } from '../contexts/useTeacherData'
 import Cookies from 'js-cookie'
+import { API_URL } from '../../../components/url/url'
 
 const AnnouncementForm = () => {
   const [title, setTitle] = useState('')
@@ -24,7 +25,7 @@ const AnnouncementForm = () => {
       formData.append('attachment', selectedFile);
     }
 
-    fetch('http://127.0.0.1:8000/school/announcements/', {
+    fetch(`${API_URL}/school/announcements/`, {
       headers: {
         'Authorization': `Token ${userToken}`,
       },

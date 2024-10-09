@@ -10,6 +10,7 @@ import { UserContext } from '../../contexts/UserContext';
 import Darkmode from '../../components/ui/Darkmode';
 import Cookies from 'js-cookie';
 import { getCookie } from '../../components/cookie/utils';
+import { API_URL } from '../../components/url/url';
 
 const Register = () => {
   const [step, setStep] = useState(1);
@@ -24,6 +25,7 @@ const Register = () => {
   const [schoolId, setSchoolId] = useState('');
   const [totalSteps, setTotalSteps] = useState(4);
   const { setIsAuthenticated, setRole } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useContext(UserContext);
   const [error, setError] = useState('');
 
@@ -73,7 +75,8 @@ const Register = () => {
         setError(errorMessage);
       }
     } else {
-      register();
+        setIsLoading(true);
+        register();
     }
   };
 
@@ -103,7 +106,7 @@ const Register = () => {
       data.school = schoolId;
     }
   
-    fetch('http://127.0.0.1:8000/schoolauth/register/', {
+    fetch(`${API_URL}/schoolauth/register/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -119,7 +122,6 @@ const Register = () => {
           return response.json();
         })
       .then((data) => {
-        console.log(data);
         setIsAuthenticated(true);
         setRole(data.role);
         setUser(data.user);
@@ -138,7 +140,10 @@ const Register = () => {
       .catch((error) => {
         console.error('Error:', error);
         setError(error.message);
-      });      
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });    
   };
 
   return (

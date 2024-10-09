@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Modal from '../components/Modal';
 import SendMessage from '../components/SendMessage';
 import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
@@ -7,10 +6,10 @@ import { UserContext } from '../../../contexts/UserContext';
 import { useSchoolData } from '../context/useSchoolData';
 import ChannelUsersModal from '../components/ChannelUsersModal';
 import AddUsersToChannel from '../components/AddUsersToChannel';
+import { API_URL } from '../../../components/url/url';
 
 function MessagePage() {
     const { school, loading } = useSchoolData();
-    console.log(school)
     const { channelId } = useParams();
     const [messages, setMessages] = useState([]);
     const userToken = Cookies.get('userToken');
@@ -18,23 +17,19 @@ function MessagePage() {
     const [channelUsers, setChannelUsers] = useState([]);
     const [showAddUsers, setShowAddUsers] = useState(false);
     const [showChannelUsers, setShowChannelUsers] = useState(false);
-    console.log("Rendering MessagePage. Channel Users:", channelUsers);
-    console.log("Current user:", user);
-    console.log("Current channelId:", channelId);
     const handleNewMessage = (newMessage) => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
     };
 
     const fetchMessages = async (channelId) => {
         try {
-        const response = await fetch(`http://127.0.0.1:8000/school/channels/${channelId}/messages/`, {
+        const response = await fetch(`${API_URL}/school/channels/${channelId}/messages/`, {
             headers: {
             'Authorization': `Token ${userToken}`,
             },
         });
         const data = await response.json();
         setMessages(data);
-        console.log(data);
         } catch (error) {
         console.error('Error fetching messages:', error);
         }
@@ -42,7 +37,6 @@ function MessagePage() {
 
     useEffect(() => {
         if (channelId) {
-          console.log("Fetching data for channel:", channelId);
           fetchMessages(channelId);
           fetchChannelUsers(channelId);
         } else {
@@ -66,14 +60,12 @@ function MessagePage() {
 
     const fetchChannelUsers = async (channelId) => {
         try {
-          console.log("Fetching users for channel:", channelId);
-          const response = await fetch(`http://127.0.0.1:8000/school/channels/${channelId}/users/`, {
+          const response = await fetch(`${API_URL}/school/channels/${channelId}/users/`, {
             headers: {
               'Authorization': `Token ${userToken}`,
             },
           });
           const data = await response.json();
-          console.log("Fetched channel users data:", data);
           setChannelUsers(data);
         } catch (error) {
           console.error('Error fetching channel users:', error);
@@ -125,9 +117,7 @@ function MessagePage() {
             )}
             <div>
             {messages.map((message) => {
-            console.log("Processing message:", message);
             const sender = channelUsers.find((user) => user.id === message.sender);
-            console.log("Found sender:", sender);
             const username = sender ? sender.username : school.user.username;
             
             return (

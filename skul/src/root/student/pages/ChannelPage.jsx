@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useParams } from 'react-router-dom';
+import { API_URL } from '../../../components/url/url';
 
 function ChannelPage() {
     const { channelId } = useParams();
@@ -11,7 +12,7 @@ function ChannelPage() {
     useEffect(() => {
         const fetchChannels = async () => {
           try {
-            const response = await fetch(`http://127.0.0.1:8000/school/channels/user/`, {
+            const response = await fetch(`${API_URL}/school/channels/user/`, {
               headers: {
                 'Authorization': `Token ${userToken}`,
               },

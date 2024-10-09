@@ -4,6 +4,7 @@ import ProfileModal from './ProfileModal';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import Avatar from '../../../components/shared/Avatars';
+import { API_URL } from '../../../components/url/url';
 
 const StudentList = ({ students, grades = [], onStudentUpdate }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -34,7 +35,7 @@ const StudentList = ({ students, grades = [], onStudentUpdate }) => {
     };
 
     const onUnassignStudent = (studentId) => {
-        fetch(`http://127.0.0.1:8000/school/unassign-student/${studentId}/`, {
+        fetch(`${API_URL}/school/unassign-student/${studentId}/`, {
             method: 'POST',
             headers: {
                 'Authorization': `Token ${userToken}`,
@@ -53,7 +54,7 @@ const StudentList = ({ students, grades = [], onStudentUpdate }) => {
 
     const onDeleteStudent = (studentId) => {
         if (window.confirm('Are you sure you want to delete this student?')) {
-            fetch(`http://127.0.0.1:8000/school/delete-student/${studentId}/`, {
+            fetch(`${API_URL}/school/delete-student/${studentId}/`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Token ${userToken}`,

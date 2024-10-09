@@ -1,7 +1,8 @@
 import Cookies from "js-cookie";
+import { API_URL } from "../url/url";
 
 export function fetchCSRFToken() {
-  fetch(`http://127.0.0.1:8000/schoolauth/csrf/`, {
+  fetch(`${API_URL}/schoolauth/csrf/`, {
     credentials: 'include',
   })
   .then(response => response.json())

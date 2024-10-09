@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import Cookies from 'js-cookie';
 import { UserContext } from '../../../contexts/UserContext';
 import { toast } from 'react-toastify';
+import { API_URL } from '../../../components/url/url';
 
 function AddGradeForm({ onAddGrade }) {
     const [gradeName, setGradeName] = useState('');
@@ -13,7 +14,7 @@ function AddGradeForm({ onAddGrade }) {
         e.preventDefault();
         const schoolId = user.id; 
       
-        fetch('http://127.0.0.1:8000/school/grades/', {
+        fetch(`${API_URL}/school/grades/`, {
           method: 'POST',
           headers: {
             'Authorization': `Token ${userToken}`,

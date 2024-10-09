@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
+import { API_URL } from '../../../components/url/url';
 
 function AddStudentForm({ gradeId }) {
     const [studentId, setStudentId] = useState('');
@@ -9,7 +10,7 @@ function AddStudentForm({ gradeId }) {
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/students/`, {
+      fetch(`${API_URL}/school/grades/${gradeId}/students/`, {
         method: 'POST',
         headers: {
           'Authorization': `Token ${userToken}`,

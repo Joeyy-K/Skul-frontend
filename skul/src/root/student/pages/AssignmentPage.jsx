@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useStudentData } from '../context/useStudentData';
+import { API_URL } from '../../../components/url/url';
 
 const AssignmentPage = () => {
     const { student, loading } = useStudentData();
@@ -9,7 +10,6 @@ const AssignmentPage = () => {
     const [selectedAssignment, setSelectedAssignment] = useState(null);
     const [submissionFile, setSubmissionFile] = useState(null);
     const [submissionStatus, setSubmissionStatus] = useState({});
-    console.log(student)
 
     useEffect(() => {
         fetchAssignments();
@@ -17,7 +17,7 @@ const AssignmentPage = () => {
 
     const fetchAssignments = async () => {
         try {
-        const response = await fetch('http://127.0.0.1:8000/school/assignments/', {
+        const response = await fetch(`${API_URL}/school/assignments/`, {
             headers: {
             'Authorization': `Token ${userToken}`
             }
@@ -31,7 +31,7 @@ const AssignmentPage = () => {
 
     const fetchSubmissionStatus = async (assignmentId) => {
         try {
-        const response = await fetch(`http://127.0.0.1:8000/school/assignments/${assignmentId}/submission-status/`, {
+        const response = await fetch(`${API_URL}/school/assignments/${assignmentId}/submission-status/`, {
             headers: {
             'Authorization': `Token ${userToken}`
             }
@@ -57,7 +57,7 @@ const AssignmentPage = () => {
         formData.append('file', submissionFile);
 
         try {
-        const response = await fetch('http://127.0.0.1:8000/school/assignment-submissions/', {
+        const response = await fetch(`${API_URL}/school/assignment-submissions/`, {
             method: 'POST',
             headers: {
             'Authorization': `Token ${userToken}`

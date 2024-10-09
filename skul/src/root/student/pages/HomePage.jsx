@@ -2,16 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { useStudentData } from "../context/useStudentData";
 import Cookies from "js-cookie";
+import { API_URL } from "../../../components/url/url";
 
 function HomePage() {
     const { user } = useContext(UserContext);
     const { student, loading } = useStudentData();
-    console.log(user)
-    console.log(student)
     const [schedules, setSchedules] = useState([]);
     const [schoolData, setSchoolData] = useState(null);
     const userToken = Cookies.get('userToken');
-
 
     useEffect(() => {
         if (user) {
@@ -22,7 +20,7 @@ function HomePage() {
 
     const fetchSchoolData = async (schoolId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/schools/${schoolId}/`, {
+            const response = await fetch(`${API_URL}/school/schools/${schoolId}/`, {
                 headers: { 'Authorization': `Token ${userToken}` },
             });
             const data = await response.json();
@@ -34,11 +32,10 @@ function HomePage() {
 
     const fetchSchedules = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/school/schedules/', {
+            const response = await fetch(`${API_URL}/school/schedules/`, {
                 headers: { 'Authorization': `Token ${userToken}` },
             });
-            const data = await response.json();
-            console.log('Fetched schedules:', data); 
+            const data = await response.json(); 
             setSchedules(data);
         } catch (error) {
             console.error('Error fetching schedules:', error);
@@ -113,7 +110,7 @@ function HomePage() {
             );
         }
 
-        const latestSchedule = schedules[0];
+        const latestSchedules = schedules.slice(0, 2);
 
         return (
             <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
@@ -135,22 +132,26 @@ function HomePage() {
                         </svg>                
                     </a>
                 </div>
-                <div className="mt-4">
-                    <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{latestSchedule.title}</h3>
-                    <p className="mt-2 text-gray-600 dark:text-gray-300">{latestSchedule.description}</p>
-                    {latestSchedule.file && (
-                        <a 
-                            href={latestSchedule.file} 
-                            className="mt-2 text-blue-500 dark:text-blue-300 hover:underline"
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                        >
-                            View Schedule File
-                        </a>
-                    )}
-                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                        {formatDate(latestSchedule.publish_date)}
-                    </p>
+                <div className="mt-4 space-y-6">
+                {latestSchedules.map((schedule, index) => (
+                    <div key={schedule.id} className={index !== 0 ? "pt-4 border-t border-gray-200 dark:border-gray-700" : ""}>
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{schedule.title}</h3>
+                        <p className="mt-2 text-gray-600 dark:text-gray-300">{schedule.description}</p>
+                        {schedule.file && (
+                            <a 
+                                href={schedule.file} 
+                                className="mt-2 inline-block text-blue-500 dark:text-blue-300 hover:underline"
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                            >
+                                View Schedule File
+                            </a>
+                        )}
+                        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            {formatDate(schedule.publish_date)}
+                        </p>
+                    </div>
+                ))}
                 </div>
             </div>
         );

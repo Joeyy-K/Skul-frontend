@@ -12,7 +12,6 @@ const Avatar = ({ avatarUrl, name, size = 40 }) => {
     );
   }
 
-  // Fallback to initial-based avatar if no image URL is provided
   const initial = name ? name[0].toUpperCase() : '?';
   const colors = [
     'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 

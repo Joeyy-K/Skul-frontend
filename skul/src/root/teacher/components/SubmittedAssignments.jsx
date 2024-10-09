@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { API_URL } from '../../../components/url/url';
 
 const SubmittedAssignments = ({ assignmentId }) => {
   const [submissions, setSubmissions] = useState([]);
@@ -12,7 +13,7 @@ const SubmittedAssignments = ({ assignmentId }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://127.0.0.1:8000/school/assignment-submissions/`, {
+        const response = await fetch(`${API_URL}/school/assignment-submissions/`, {
           headers: {
             'Authorization': `Token ${Cookies.get('userToken')}`
           }
@@ -21,7 +22,6 @@ const SubmittedAssignments = ({ assignmentId }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        // Filter submissions for the specific assignment
         const filteredSubmissions = data.filter(submission => submission.assignment === assignmentId);
         setSubmissions(filteredSubmissions);
       } catch (error) {

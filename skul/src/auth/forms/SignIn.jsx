@@ -5,6 +5,8 @@ import { UserContext } from '../../contexts/UserContext';
 import { getCookie } from '../../components/cookie/utils';
 import Darkmode from '../../components/ui/Darkmode';
 import Cookies from 'js-cookie';
+import { API_URL } from '../../components/url/url';
+import { Loader2 } from 'lucide-react'; 
 
 const SignIn = () => {
   const { setIsAuthenticated, setRole } = useContext(AuthContext);
@@ -12,18 +14,21 @@ const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); 
 
   let csrftoken = getCookie('csrftoken');
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setIsLoading(true);
+    setError(''); 
   
     const data = {
       username: username,
       password: password,
     };
   
-    fetch('http://127.0.0.1:8000/schoolauth/login/', {
+    fetch(`${API_URL}/schoolauth/login/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +44,6 @@ const SignIn = () => {
         return response.json();
     })
     .then(data => {
-      console.log(data);
       setIsAuthenticated(true);
       setRole(data.role);
       setUser(data.user);
@@ -58,17 +62,19 @@ const SignIn = () => {
     .catch((error) => {
       console.error('Error:', error);
       setError(error.message);
+    })
+    .finally(() => {
+      setIsLoading(false); 
     });
   };
   
-
   return (
     <div className="h-full">
       <div className="flex justify-center pt-2">
         <Darkmode />
       </div>
       <div className="mx-auto">
-		    <div className="flex py-20">
+        <div className="flex py-20">
           <div className="w-full justify-center flex">
             <div className="w-full lg:w-3/4 bg-gray-200 dark:bg-gray-700  rounded-lg">
                 <h2 className="py-4 text-2xl text-center text-gray-800 dark:text-white">Welcome Back!</h2>
@@ -102,8 +108,16 @@ const SignIn = () => {
                         <button 
                           className="flex mb-3 items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-white bg-blue-500 rounded-md hover:bg-blue-700 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-900 md:py-4 md:text-lg md:px-10"
                           onClick={handleSubmit}
-                          >
-                            Sign In
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Signing In...
+                            </>
+                          ) : (
+                            'Sign In'
+                          )}
                         </button>
                         <p className="font-semibold text-black dark:text-white">
                           Don't have an account?

@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { FiPlus, FiSearch, FiFilter, FiChevronLeft } from 'react-icons/fi';
 import CreateStudentProfile from '../forms/CreateStudentProfile';
 import StudentList from '../components/StudentList';
+import { API_URL } from '../../../components/url/url';
 
 function StudentsPage() {
     const { school, loading } = useSchoolData();
@@ -25,7 +26,7 @@ function StudentsPage() {
 
     const fetchStudents = async () => {
         try {
-            let url = `http://127.0.0.1:8000/school/students/?school_id=${school.id}`;
+            let url = `${API_URL}/school/students/?school_id=${school.id}`;
             if (selectedGrade && selectedGrade.id !== 'all') {
                 url += `&grade_id=${selectedGrade.id}`;
             }
@@ -41,7 +42,7 @@ function StudentsPage() {
 
     const fetchGrades = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/grades/?school_id=${school.id}`, {
+            const response = await fetch(`${API_URL}/school/grades/?school_id=${school.id}`, {
                 headers: { 'Authorization': `Token ${userToken}` },
             });
             const data = await response.json();

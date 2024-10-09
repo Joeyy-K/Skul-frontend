@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { SchoolContext } from '../context/schoolcontext';
 import Cookies from 'js-cookie';
+import { API_URL } from '../../../components/url/url';
 
 const CreateStudentProfile = ({ onAddStudent, selectedGrade }) => {
   const [firstName, setFirstName] = useState('');
@@ -36,7 +37,7 @@ const CreateStudentProfile = ({ onAddStudent, selectedGrade }) => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/school/register_student/', {
+      const response = await fetch(`${API_URL}/school/register_student/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

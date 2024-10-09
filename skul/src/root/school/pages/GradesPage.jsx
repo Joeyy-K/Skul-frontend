@@ -5,6 +5,7 @@ import { FiPlus, FiSearch, FiFilter } from 'react-icons/fi';
 import AddGradeForm from '../forms/AddGradeForm';
 import GradeList from '../components/GradeList';
 import { toast } from 'react-toastify';
+import { API_URL } from '../../../components/url/url';
 
 function GradesPage() {
     const { school, loading } = useSchoolData();
@@ -25,7 +26,7 @@ function GradesPage() {
 
     const fetchGrades = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/grades/?school_id=${school.id}`, {
+            const response = await fetch(`${API_URL}/school/grades/?school_id=${school.id}`, {
                 headers: { 'Authorization': `Token ${userToken}` },
             });
             const data = await response.json();
@@ -37,7 +38,7 @@ function GradesPage() {
 
     const fetchTeachers = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/teachers/?school_id=${school.id}`, {
+            const response = await fetch(`${API_URL}/school/teachers/?school_id=${school.id}`, {
                 headers: { 'Authorization': `Token ${userToken}` },
             });
             const data = await response.json();
@@ -49,7 +50,7 @@ function GradesPage() {
 
     const handleDeleteGrade = (gradeId) => {
         if (window.confirm('Are you sure you want to delete this grade? This action cannot be undone.')) {
-            fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/delete/`, {
+            fetch(`${API_URL}/school/grades/${gradeId}/delete/`, {
                 method: 'DELETE',
                 headers: {
                 'Authorization': `Token ${userToken}`,
@@ -88,7 +89,7 @@ function GradesPage() {
 
     const handleAssignTeacher = async (gradeId, teacherId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/grades/${gradeId}/teacher/`, {
+            const response = await fetch(`${API_URL}/school/grades/${gradeId}/teacher/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
