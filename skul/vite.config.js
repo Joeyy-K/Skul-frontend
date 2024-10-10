@@ -5,6 +5,8 @@ import path from 'path';
 export default defineConfig({
   build: {
     target: 'esnext',
+    outDir: 'dist',
+    assetsDir: 'assets',
     rollupOptions: {
       external: ['@rollup/rollup-linux-x64-gnu']
     }
@@ -13,6 +15,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
-    }
+    },
+    extensions: ['.js', '.jsx', '.json']
   }
-})
+});
