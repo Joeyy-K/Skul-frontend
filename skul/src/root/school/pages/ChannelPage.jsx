@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../../contexts/UserContext';
-import AddChannel from '../forms/AddChannel.jsx';
+import AddChannel from '../components/AddChannel.jsx';
 import { Link, Outlet } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { FiMessageSquare, FiTrash2 } from 'react-icons/fi';
