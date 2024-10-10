@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import Darkmode from '@/components/ui/Darkmode';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import { getCookie } from '../../components/cookie/utils';
-import Darkmode from '@/components/ui/Darkmode';
 import Cookies from 'js-cookie';
 import { API_URL } from '../../components/url/url';
 import { Loader2 } from 'lucide-react'; 
