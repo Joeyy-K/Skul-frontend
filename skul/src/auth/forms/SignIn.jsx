@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import Darkmode from '@/components/ui/Darkmode';
+import Darkmode from '../../components/shared/Darkmode';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import { getCookie } from '../../components/cookie/utils';

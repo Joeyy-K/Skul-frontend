@@ -4,7 +4,7 @@ import Steptwo from '@/components/ui/Steptwo';
 import Stepthree from '@/components/ui/Stepthree';
 import Tstepthree from '@/components/ui/Tstepthree';
 import Stepfour from '@/components/ui/Stepfour';
-import Darkmode from '@/components/ui/Darkmode';
+import Darkmode from '../../components/shared/Darkmode';
 import { Link } from "react-router-dom";
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
