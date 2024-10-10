@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Registerdropdown from '@/components/ui/RegisterDropdown';
-import Steptwo from '@/components/ui/Steptwo';
-import Stepthree from '@/components/ui/Stepthree';
-import Tstepthree from '@/components/ui/Tstepthree';
-import Stepfour from '@/components/ui/Stepfour';
+import Registerdropdown from '../../components/shared/Registerdropdown';
+import Steptwo from '../../components/shared/Steptwo';
+import Stepthree from '../../components/shared/Stepthree';
+import Tstepthree from '../../components/shared/Tstepthree';
+import Stepfour from '../../components/shared/Stepfour';
 import Darkmode from '../../components/shared/Darkmode';
 import { Link } from "react-router-dom";
 import { AuthContext } from '../../contexts/AuthContext';
