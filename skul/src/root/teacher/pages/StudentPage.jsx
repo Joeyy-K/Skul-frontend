@@ -15,6 +15,8 @@ const StudentPage = () => {
   const { teacher, loading: teacherLoading } = useTeacherData();
   const userToken = Cookies.get('userToken');
 
+  console.log("Avatar URL:", students.user?.avatar_url);
+
   useEffect(() => {
     const fetchStudents = async () => {
       if (teacher && teacher.grade) {

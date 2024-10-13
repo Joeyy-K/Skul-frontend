@@ -221,9 +221,8 @@ const Register = () => {
                   <div className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white p-8 rounded">
                       <h2 className="font-bold text-2xl">Instructions</h2>
                       <ul className="list-disc mt-4 list-inside">
-                          <li>All users must provide a valid email address and password to create an account.</li>
-                          <li>Users must not use offensive, vulgar, or otherwise inappropriate language in their username or profile information</li>
-                          <li>Users must not create multiple accounts for the same person.</li>
+                          <li>You can register to test out the function but you will not have much data to see the functions.</li>
+                          <li>Valid credentails are provided in the Login page</li>
                       </ul>
                   </div>
                 </aside>

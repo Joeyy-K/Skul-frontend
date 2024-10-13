@@ -119,12 +119,32 @@ const SignIn = () => {
                             'Sign In'
                           )}
                         </button>
-                        <p className="font-semibold text-black dark:text-white">
+                        <p className="font-semibold text-black dark:text-white mb-3">
                           Don't have an account?
                           <Link className="text-red-600 underline" to={'/register'}>
                             {} Register
                           </Link>
                         </p>
+                        <aside className="">
+                          <div className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white px-8 py-4 rounded">
+                              <h2 className="font-bold text-2xl">Login Credentials</h2>
+                              <h2 className="font-semibold text-xl mt-2">For School:</h2>
+                              <ul className="list-disc mt-2 list-inside">
+                                  <li>Username : Mirema</li>
+                                  <li>Password : miremaschool@gaex.com</li>
+                              </ul>
+                              <h2 className="font-semibold text-xl mt-2">For Teacher:</h2>
+                              <ul className="list-disc mt-2 list-inside">
+                                  <li>Username : caseoh</li>
+                                  <li>Password : password123</li>
+                              </ul>
+                              <h2 className="font-semibold text-xl mt-2">For Student:</h2>
+                              <ul className="list-disc mt-2 list-inside">
+                                  <li>Username : timmy</li>
+                                  <li>Password : password123</li>
+                              </ul>
+                          </div>
+                        </aside>
                       </div>
                     </div>
                   </div>
