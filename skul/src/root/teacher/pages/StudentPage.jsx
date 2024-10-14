@@ -24,7 +24,7 @@ const StudentPage = () => {
           const response = await fetch(`${API_URL}/school/grades/${teacher.grade}/students/`, {
             headers: {
               'Authorization': `Token ${userToken}`,
-            },
+            },n
           });
           const data = await response.json();
           setStudents(data);

@@ -1,1 +1,1 @@
-export const API_URL = "https://skull-rcnu.onrender.com"
+export const API_URL = "https://krnjjoe.pythonanywhere.com/"

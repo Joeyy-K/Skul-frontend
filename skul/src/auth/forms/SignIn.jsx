@@ -131,7 +131,7 @@ const SignIn = () => {
                               <h2 className="font-semibold text-xl mt-2">For School:</h2>
                               <ul className="list-disc mt-2 list-inside">
                                   <li>Username : Mirema</li>
-                                  <li>Password : miremaschool@gaex.com</li>
+                                  <li>Password : miremaschool@yaho.com</li>
                               </ul>
                               <h2 className="font-semibold text-xl mt-2">For Teacher:</h2>
                               <ul className="list-disc mt-2 list-inside">
