@@ -4,6 +4,7 @@ import AddChannel from '../components/AddChannel.jsx';
 import { Link, Outlet } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { FiMessageSquare, FiTrash2 } from 'react-icons/fi';
+import { API_URL } from '../../../components/url/url.jsx';
 
 function ChannelPage() {
     const { user } = useContext(UserContext);
@@ -21,7 +22,7 @@ function ChannelPage() {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/school/channels/`, {
+            const response = await fetch(`${API_URL}/school/channels/`, {
                 headers: {
                     'Authorization': `Token ${userToken}`,
                 },
@@ -47,7 +48,7 @@ function ChannelPage() {
     const deleteChannel = async (channelId) => {
         if (window.confirm('Are you sure you want to delete this channel?')) {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/school/channels/${channelId}/delete/`, {
+                const response = await fetch(`${API_URL}/school/channels/${channelId}/delete/`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Token ${userToken}`,
