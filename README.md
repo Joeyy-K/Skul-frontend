@@ -46,6 +46,7 @@ Copy
 ![School View](/skul/public/images/Screenshot%20(28).png)
 ![School View](/skul/public/images/Screenshot%20(29).png)
 - Create and manage communication channels
+![School View](/skul/public/images/Screenshot%20(33).png)
 - View and manage all users in the school system
 ![School View](/skul/public/images/Screenshot%20(32).png)
 
